@@ -3,3 +3,4 @@ node_modules/
 /.homeybuild/
 tools/preview/
 __pycache__/
+CLAUDE.local.md
