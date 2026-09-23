@@ -64,9 +64,9 @@ const out = (p, w, h) => fs.writeFileSync(path.join(root, p), png(w, h, pixel));
 out('assets/images/small.png', 250, 175);
 out('assets/images/large.png', 500, 350);
 out('assets/images/xlarge.png', 1000, 700);
-out('drivers/zendure/assets/images/small.png', 75, 75);
-out('drivers/zendure/assets/images/large.png', 500, 500);
-out('drivers/zendure/assets/images/xlarge.png', 1000, 1000);
+out('tools/images/driver-small.png', 75, 75);
+out('tools/images/driver-large.png', 500, 500);
+out('tools/images/driver-xlarge.png', 1000, 1000);
 // Widget previews: price bars coloured by planned action
 function widgetPixel(bg, fg) {
   const prices = [18, 17, 16, 15, 14, 16, 22, 26, 21, 15, 10, 8, 7, 8, 12, 17, 24, 29, 30, 28, 25, 22, 20, 19];

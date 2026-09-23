@@ -14,5 +14,9 @@
   "0.4.0": {
     "en": "Local web page with all data and settings (PIN protected). New strategy Zero import; force charge/discharge until a goal with a follow-up strategy; configurable action per price period; grid import/export limits on top of every strategy; direction hysteresis.",
     "nl": "Lokale webpagina met alle gegevens en instellingen (beveiligd met pincode). Nieuwe strategie Nul import; geforceerd laden/ontladen tot een doel met vervolgstrategie; instelbare actie per prijsperiode; import-/exportgrens bovenop elke strategie; hysterese laden/ontladen."
+  },
+  "0.5.0": {
+    "en": "Support for more home batteries: all Zendure SolarFlow models with the local API (800, 800 Plus, 800 Pro, 1600 AC+, 2400 AC/AC+/Pro), Marstek Venus E/A/D (Modbus TCP) and Anker SOLIX Solarbank Max (AC), XE and Solarbank 4 (official local Modbus TCP). Switching demo mode on hands the battery back to its own program. Experimental for Marstek and Anker: check the data in demo mode first.",
+    "nl": "Ondersteuning voor meer thuisbatterijen: alle Zendure SolarFlow-modellen met de lokale API (800, 800 Plus, 800 Pro, 1600 AC+, 2400 AC/AC+/Pro), Marstek Venus E/A/D (Modbus TCP) en Anker SOLIX Solarbank Max (AC), XE en Solarbank 4 (officiële lokale Modbus TCP). Demo-modus aanzetten geeft de batterij terug aan zijn eigen programma. Experimenteel voor Marstek en Anker: controleer eerst de gegevens in demo-modus."
   }
 }

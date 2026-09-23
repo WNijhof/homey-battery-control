@@ -1,6 +1,6 @@
 {
   "id": "com.drpeppers.batterycontrol",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
@@ -11,8 +11,8 @@
     "nl": "Batterij Regeling"
   },
   "description": {
-    "en": "Smart home battery control: zero-grid, solar and dynamic price optimisation",
-    "nl": "Slimme thuisbatterij-regeling: nul-op-de-meter, zon en dynamische prijzen"
+    "en": "Smart local control for Zendure, Marstek and Anker home batteries",
+    "nl": "Slimme lokale regeling voor Zendure-, Marstek- en Anker-thuisbatterijen"
   },
   "category": [
     "energy"
@@ -33,5 +33,29 @@
   "support": "https://github.com/WNijhof/homey-battery-control/issues",
   "bugs": {
     "url": "https://github.com/WNijhof/homey-battery-control/issues"
+  },
+  "tags": {
+    "en": [
+      "home battery",
+      "plug-in battery",
+      "zendure",
+      "marstek",
+      "anker",
+      "solix",
+      "dynamic prices",
+      "zero grid",
+      "homewizard"
+    ],
+    "nl": [
+      "thuisbatterij",
+      "stekkerbatterij",
+      "zendure",
+      "marstek",
+      "anker",
+      "solix",
+      "dynamische prijzen",
+      "nul op de meter",
+      "homewizard"
+    ]
   }
 }

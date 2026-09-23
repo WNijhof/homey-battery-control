@@ -26,7 +26,7 @@
     {
       "type": "device",
       "name": "device",
-      "filter": "driver_id=zendure"
+      "filter": "driver_id=zendure|marstek|anker"
     },
     {
       "type": "number",

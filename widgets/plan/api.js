@@ -2,8 +2,7 @@
 
 module.exports = {
   async getPlan({ homey }) {
-    const driver = homey.drivers.getDriver('zendure');
-    const [device] = driver.getDevices();
+    const [device] = homey.app.batteries();
     if (!device) return null;
     return device.getWidgetData();
   },

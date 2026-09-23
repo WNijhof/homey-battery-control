@@ -15,19 +15,21 @@ class FakeDevice {
         prices: {
           futureSlots: () => [], onUpdate: () => () => {}, setEntsoeToken() {}, formatDate: () => 'x',
         },
+        batteries: () => [this],
+        updateWebServer: () => {},
+        triggers: {
+          strategyChanged: { trigger: async () => {} },
+          planChanged: { trigger: async () => {} },
+          demoChanged: { trigger: async () => {} },
+          surplusAbove: { trigger: async () => {} },
+          surplusBelow: { trigger: async () => {} },
+        },
       },
       clock: { getTimezone: () => 'Europe/Amsterdam' },
       geolocation: { getLatitude: () => 52, getLongitude: () => 5 },
       setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
     };
-    this.driver = {
-      getDevices: () => [this],
-      strategyChangedTrigger: { trigger: async () => {} },
-      planChangedTrigger: { trigger: async () => {} },
-      demoChangedTrigger: { trigger: async () => {} },
-      surplusAboveTrigger: { trigger: async () => {} },
-      surplusBelowTrigger: { trigger: async () => {} },
-    };
+    this.driver = { id: 'zendure' };
   }
   log() {}
   error() {}
@@ -56,8 +58,12 @@ Module._load = function load(request, ...rest) {
 };
 const Device = require('../drivers/zendure/device');
 
+// every brand driver loads (no syntax/require errors)
+require('../drivers/marstek/device');
+require('../drivers/anker/device');
+
 const SETTINGS = {
-  demo_mode: true, zendure_ip: '1.1.1.1', p1_ip: '1.1.1.2', p1_token: '', interval: 5, capacity_kwh: 2.4,
+  demo_mode: true, battery_ip: '1.1.1.1', p1_ip: '1.1.1.2', p1_token: '', interval: 5, capacity_kwh: 2.4,
   max_charge_w: 800, max_discharge_w: 800, min_soc: 10, max_soc: 100, efficiency: 85, auto_efficiency: true,
   grid_target: 20, gain: 0.7, deadband: 25, min_power: 30, force_charge_w: 800, force_discharge_w: 800,
   peak_threshold: 2500, markup: 0.02, tax_per_kwh: 0.11, min_spread: 0.05, dyn_low: 'charge',
@@ -72,9 +78,11 @@ async function makeDevice(demo, { p1Fails = false } = {}) {
   d.caps.battery_strategy = 'self_consumption';
   await d.onInit();
   d.writes = [];
-  d.zendure = {
-    report: async () => ({ sn: 'SN1', properties: { electricLevel: 50, outputHomePower: 0, gridInputPower: 0 } }),
+  d.battery = {
+    read: async () => ({ soc: 50, batteryPower: 0, sn: 'SN1' }),
     setPower: async (w) => d.writes.push(w),
+    release: async () => d.writes.push('release'),
+    close() {},
   };
   d.p1 = { read: async () => { if (p1Fails) throw new Error('offline'); return { gridPower: 600 }; } };
   return d;
@@ -103,7 +111,7 @@ async function makeDevice(demo, { p1Fails = false } = {}) {
   assert.strictEqual(d.writes.length, 1, 'live: command sent');
   assert(d.writes[0] > 0, 'live: discharges to cover 600 W import');
   await d.onUninit();
-  assert.strictEqual(d.writes[d.writes.length - 1], 0, 'live: stand-by on stop');
+  assert.strictEqual(d.writes[d.writes.length - 1], 'release', 'live: battery handed back on stop');
 
   // live + P1 outage: stand-by after 3 failures
   d = await makeDevice(false, { p1Fails: true });
@@ -116,6 +124,12 @@ async function makeDevice(demo, { p1Fails = false } = {}) {
   await d.setDemoMode(false);
   await d.tick();
   assert.strictEqual(d.writes.length, 1, 'after demo off: control resumes');
+
+  // switching demo back on hands the battery back to its own program
+  d = await makeDevice(false);
+  await d.tick();
+  await d.setDemoMode(true);
+  assert.strictEqual(d.writes[d.writes.length - 1], 'release', 'demo on: battery released');
 
   // settings from the web page: type conversion, limits, validation, secrets
   d = await makeDevice(true);
@@ -156,8 +170,8 @@ async function makeDevice(demo, { p1Fails = false } = {}) {
   // one control round at a time: a second tick during a slow round does not send extra commands
   d = await makeDevice(false);
   let release;
-  d.zendure.report = () => new Promise((resolve) => {
-    release = () => resolve({ sn: 'SN1', properties: { electricLevel: 50, outputHomePower: 0, gridInputPower: 0 } });
+  d.battery.read = () => new Promise((resolve) => {
+    release = () => resolve({ soc: 50, batteryPower: 0, sn: 'SN1' });
   });
   const first = d.tick();
   await d.tick(); // arrives while the first round is still waiting for the battery
@@ -168,8 +182,8 @@ async function makeDevice(demo, { p1Fails = false } = {}) {
 
   // after cleanup (app stop / device deleted) an in-flight round sends nothing
   d = await makeDevice(false);
-  d.zendure.report = () => new Promise((resolve) => {
-    release = () => resolve({ sn: 'SN1', properties: { electricLevel: 50, outputHomePower: 0, gridInputPower: 0 } });
+  d.battery.read = () => new Promise((resolve) => {
+    release = () => resolve({ soc: 50, batteryPower: 0, sn: 'SN1' });
   });
   const inFlight = d.tick();
   d.cleanup();

@@ -7,6 +7,7 @@ const PriceService = require('./lib/prices');
 const { WebServer } = require('./lib/webserver');
 
 const PRICE_REFRESH_MS = 30 * 60 * 1000;
+const BATTERY_DRIVERS = ['zendure', 'marstek', 'anker'];
 
 class BatteryControlApp extends Homey.App {
 
@@ -22,10 +23,12 @@ class BatteryControlApp extends Homey.App {
       this.prices.refresh().catch(this.error);
     }, PRICE_REFRESH_MS);
 
+    this.registerFlowCards();
+
     this.webServer = new WebServer({
       page: fs.readFileSync(path.join(__dirname, 'web', 'index.html'), 'utf8'),
       getDevices: () => this.batteries(),
-      getSchema: () => this.settingsSchema(),
+      getSchema: (device) => this.settingsSchema(device.driver.id),
       log: this.log.bind(this),
       error: this.error.bind(this),
     });
@@ -35,12 +38,66 @@ class BatteryControlApp extends Homey.App {
     this.log('Battery Control started');
   }
 
+  /** Flow cards are shared by all battery brands, so they are registered once here. */
+  registerFlowCards() {
+    const { flow } = this.homey;
+
+    flow.getActionCard('set_strategy').registerRunListener(({ device, strategy }) => device.setStrategy(strategy));
+    // never store more than the maximum power, otherwise later edits in the settings screen fail validation
+    flow.getActionCard('force_charge').registerRunListener(async ({ device, power }) => {
+      await device.setSettings({ force_charge_w: Math.min(power, device.getSetting('max_charge_w')) });
+      await device.setStrategy('charge');
+    });
+    flow.getActionCard('force_discharge').registerRunListener(async ({ device, power }) => {
+      await device.setSettings({ force_discharge_w: Math.min(power, device.getSetting('max_discharge_w')) });
+      await device.setStrategy('discharge');
+    });
+    flow.getActionCard('set_grid_target').registerRunListener(
+      ({ device, power }) => device.setSettings({ grid_target: power }),
+    );
+    flow.getActionCard('set_demo').registerRunListener(
+      ({ device, enabled }) => device.setDemoMode(enabled === 'on'),
+    );
+
+    flow.getConditionCard('strategy_is').registerRunListener(
+      ({ device, strategy }) => device.getCapabilityValue('battery_strategy') === strategy,
+    );
+    flow.getConditionCard('plan_is').registerRunListener(
+      ({ device, action }) => device.getCapabilityValue('battery_plan') === action,
+    );
+    flow.getConditionCard('price_below').registerRunListener(({ device, price }) => {
+      const current = device.getCapabilityValue('energy_price');
+      return current !== null && current < price;
+    });
+    flow.getConditionCard('surplus_above').registerRunListener(({ device, power }) => device.surplus.current() > power);
+    flow.getConditionCard('soc_above').registerRunListener(({ device, percent }) => {
+      const soc = device.getCapabilityValue('measure_battery');
+      return soc !== null && soc > percent;
+    });
+    flow.getConditionCard('demo_is_on').registerRunListener(({ device }) => device.getSetting('demo_mode') === true);
+
+    this.triggers = {
+      planChanged: flow.getDeviceTriggerCard('plan_changed'),
+      strategyChanged: flow.getDeviceTriggerCard('strategy_changed'),
+      demoChanged: flow.getDeviceTriggerCard('demo_changed'),
+      surplusAbove: flow.getDeviceTriggerCard('surplus_above'),
+      surplusBelow: flow.getDeviceTriggerCard('surplus_below'),
+    };
+    this.triggers.surplusAbove.registerRunListener((args, state) => args.device.surplusCrossed(args, state, true));
+    this.triggers.surplusBelow.registerRunListener((args, state) => args.device.surplusCrossed(args, state, false));
+  }
+
+  /** All batteries of all brands. */
   batteries() {
-    try {
-      return this.homey.drivers.getDriver('zendure').getDevices();
-    } catch (err) {
-      return [];
+    const devices = [];
+    for (const id of BATTERY_DRIVERS) {
+      try {
+        devices.push(...this.homey.drivers.getDriver(id).getDevices());
+      } catch (err) {
+        // driver not ready yet
+      }
     }
+    return devices;
   }
 
   /** Start, move or stop the web page according to the settings of the (first) battery. */
@@ -61,10 +118,11 @@ class BatteryControlApp extends Homey.App {
     }
   }
 
-  /** Flat list of the battery settings (from the app manifest), Dutch labels, for the web page. */
-  settingsSchema() {
-    if (this.schema) return this.schema;
-    const driver = this.homey.manifest.drivers.find((d) => d.id === 'zendure');
+  /** Flat list of the settings of a battery driver (from the app manifest), Dutch labels, for the web page. */
+  settingsSchema(driverId = 'zendure') {
+    this.schemas = this.schemas || {};
+    if (this.schemas[driverId]) return this.schemas[driverId];
+    const driver = this.homey.manifest.drivers.find((d) => d.id === driverId);
     const text = (t) => (t && typeof t === 'object' ? t.nl || t.en : t) || '';
     const fields = [];
     for (const group of driver.settings) {
@@ -83,7 +141,7 @@ class BatteryControlApp extends Homey.App {
         });
       }
     }
-    this.schema = fields;
+    this.schemas[driverId] = fields;
     return fields;
   }
 

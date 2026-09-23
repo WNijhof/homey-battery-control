@@ -1,7 +1,7 @@
 {
   "name": {
-    "en": "Zendure SolarFlow (controlled)",
-    "nl": "Zendure SolarFlow (geregeld)"
+    "en": "Zendure SolarFlow",
+    "nl": "Zendure SolarFlow"
   },
   "class": "battery",
   "platforms": [
@@ -111,16 +111,16 @@
       },
       "children": [
         {
-          "id": "zendure_ip",
+          "id": "battery_ip",
           "type": "text",
           "label": {
-            "en": "Zendure IP address",
-            "nl": "Zendure IP-adres"
+            "en": "Battery IP address",
+            "nl": "IP-adres batterij"
           },
           "value": "",
           "hint": {
-            "en": "IP address of the Zendure in your home network. Give it a fixed address in your router.",
-            "nl": "IP-adres van de Zendure in je thuisnetwerk. Geef hem een vast adres in je router."
+            "en": "IP address of the battery (or of the RS485 bridge) in your home network. Give it a fixed address in your router.",
+            "nl": "IP-adres van de batterij (of van de RS485-adapter) in je thuisnetwerk. Geef het een vast adres in je router."
           }
         },
         {
@@ -184,8 +184,8 @@
             "nl": "Capaciteit"
           },
           "hint": {
-            "en": "SolarFlow 2400 AC+: 2.4 kWh built in + 2.88 kWh per AB3000L expansion",
-            "nl": "SolarFlow 2400 AC+: 2,4 kWh ingebouwd + 2,88 kWh per AB3000L-uitbreiding"
+            "en": "SolarFlow 2400 AC+: 2.4 kWh built in + 2.88 kWh per AB3000L; SolarFlow 800: 1.92 kWh per battery.",
+            "nl": "SolarFlow 2400 AC+: 2,4 kWh ingebouwd + 2,88 kWh per AB3000L; SolarFlow 800: 1,92 kWh per accu."
           },
           "value": 2.4,
           "min": 0.5,

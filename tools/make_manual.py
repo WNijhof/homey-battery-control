@@ -302,7 +302,7 @@ def on_page(canvas, doc):
     canvas.setFont('Arial', 7.5)
     canvas.setFillColor(GREY)
     canvas.drawString(MARGIN, PAGE_H - 10 * mm, 'Handleiding Batterij Regeling voor Homey  ·  Zendure SolarFlow 2400 AC+')
-    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.4.0')
+    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.5.0')
     canvas.line(MARGIN, 12 * mm, PAGE_W - MARGIN, 12 * mm)
     canvas.drawString(MARGIN, 8 * mm, 'DrPeppers  ·  github.com/WNijhof/homey-battery-control')
     canvas.drawRightString(PAGE_W - MARGIN, 8 * mm, f'pagina {doc.page}')
@@ -691,6 +691,60 @@ def chapter_13():
     return out
 
 
+# ---------------------------------------------------------------- bijlage C: andere batterijen
+def appendix_brands():
+    return [
+        H1('Bijlage C. Andere thuisbatterijen'),
+        P('Naast de Zendure SolarFlow 2400 AC+ ondersteunt de app ook andere populaire (stekker)batterijen met een '
+          'lokale aansturing. De regeling, het prijsplan, de Flows, de webpagina en de demo-modus zijn voor alle '
+          'merken gelijk; alleen de koppeling met de batterij verschilt. Kies bij <i>Apparaat toevoegen</i> het merk.'),
+        callout('De koppelingen met Marstek en Anker zijn gebouwd op de openbare documentatie en de officiële of '
+                'veelgebruikte integraties, maar nog niet getest met echte hardware. Laat een nieuwe batterij daarom '
+                'eerst een paar dagen in demo-modus meekijken (hoofdstuk 6a) en controleer vooral het teken van het '
+                'batterijvermogen (laden/ontladen).', 'warn'),
+        table([
+            ['Merk', 'Modellen', 'Verbinding', 'Terug naar eigen programma'],
+            ['Zendure', 'SolarFlow 800 / 800 Plus / 800 Pro / 1600 AC+ / 2400 AC / AC+ / Pro',
+             'Lokale HTTP-API (zenSDK), recente firmware', 'Stand-by; daarna Zendure-app'],
+            ['Marstek', 'Venus E v3', 'Modbus TCP via de netwerkkabel van de batterij', 'Ja (RS485-besturing uit)'],
+            ['Marstek', 'Venus E v1/v2, Venus A, Venus D',
+             'Modbus TCP via een RS485-wifi-adapter (bijv. Elfin EW11)', 'Ja (RS485-besturing uit)'],
+            ['Anker', 'Solarbank Max AC, Solarbank Max, XE (AC), Solarbank 4 E5000 Pro',
+             'Officiële lokale Modbus TCP', 'Ja (vorige werkmodus hersteld)'],
+        ], [22 * mm, 58 * mm, 62 * mm, CONTENT_W - 142 * mm]),
+        Spacer(1, 4),
+        P('<b>Niet (lokaal) aan te sturen:</b> Zendure Hub 1200/2000, Hyper 2000 en AIO 2400 (alleen via MQTT met een '
+          'eigen broker), Anker Solarbank 2 en 3 (alleen via de Anker-cloud), Marstek B2500 (cloud/Bluetooth). De '
+          'Marstek Open API (UDP) is te traag voor nul op de meter: maximaal één verzoek per minuut wordt aangeraden.',
+          'small'),
+        H2('C.1 Marstek Venus'),
+        *bullets([
+            '<b>Venus E v3:</b> sluit de batterij met een netwerkkabel aan op je router en geef hem een vast IP-adres.',
+            '<b>Venus E v1/v2, A, D:</b> sluit een RS485-naar-Modbus-TCP-adapter aan op de RS485-poort van de batterij '
+            '(bijv. Elfin EW11) en gebruik het IP-adres van de adapter.',
+            'Kies bij het koppelen het juiste <b>model</b>: de registerindeling verschilt per versie.',
+            'De app zet „RS485-besturing” aan zodra hij stuurt, en weer uit als de demo-modus aan gaat of de app '
+            'stopt; de batterij gaat dan terug naar de werkmodus uit de Marstek-app.',
+        ]),
+        H2('C.2 Anker SOLIX'),
+        *bullets([
+            'Anker-app → apparaat → <i>Three-Party Control Settings</i> → zet <b>Modbus TCP</b> aan; de app toont daar '
+            'het IP-adres.',
+            'De app zet de batterij in de werkmodus <i>Third-party control</i> zodra hij stuurt en herstelt de vorige '
+            'werkmodus (bijv. Smart of Self-consumption) als de demo-modus aan gaat of de app stopt.',
+        ]),
+        H2('C.3 Eerste controle per merk (in demo-modus)'),
+        checklist('c_c3', [
+            ('Laadniveau in Homey gelijk aan de app van de fabrikant (± 1 %)', 'Noteer beide'),
+            ('Batterijvermogen: laden en ontladen met het juiste teken', 'Zo niet: „Teken batterijvermogen omdraaien”'),
+            ('Capaciteit en maximaal laad-/ontlaadvermogen ingesteld volgens typeplaatje en installatie', ''),
+            ('Demo-modus uit: batterij volgt de regeling (test T2/T3)', ''),
+            ('Demo-modus weer aan: batterij terug op eigen programma', ''),
+        ]),
+        PageBreak(),
+    ]
+
+
 # ---------------------------------------------------------------- content
 def build():
     story = []
@@ -986,7 +1040,7 @@ def build():
                         '(Of <font name="Arial-Bold">homey app run</font> om live logs te zien tijdens het testen; de '
                         'app stopt dan als je de terminal sluit.)'],
                   ['6', 'Homey-app → <i>Apparaat toevoegen</i> → <i>Batterij Regeling</i> → '
-                        '<i>Zendure SolarFlow (geregeld)</i>.'],
+                        '<i>Zendure SolarFlow</i> (of <i>Marstek Venus</i> / <i>Anker SOLIX</i>, zie bijlage C).'],
                   ['7', '<i>Zoek in mijn netwerk</i> (10–20 s) vult de IP-adressen automatisch in; of vul ze zelf '
                         'in → <i>Verbinden</i>. De app controleert beide verbindingen voordat het apparaat wordt '
                         'aangemaakt.'],
@@ -1483,6 +1537,7 @@ def build():
                   ['test/*.test.js', 'Tests (npm test)'],
               ], [60 * mm, CONTENT_W - 60 * mm]),
               PageBreak(),
+              *appendix_brands(),
               H1('Bijlage B. Oplevering'),
               P('Met ondertekening wordt bevestigd dat de installatie volgens deze handleiding is uitgevoerd en '
                 'dat de tests in hoofdstuk 8 zijn doorlopen.'),
