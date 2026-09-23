@@ -50,6 +50,14 @@ const manifest = require('../app.json');
     page: fs.readFileSync(path.join(__dirname, '..', 'web', 'index.html'), 'utf8'),
     getDevices: () => [device],
     getSchema: () => schema,
+    getDiagnostics: () => 'voorbeeld',
+    getRecentLog: () => [
+      { time: '23-09-2026 16:00:02', level: 'info', source: 'app', message: 'App gestart, versie 0.5.0' },
+      { time: '23-09-2026 16:00:05', level: 'info', source: 'Zendure', message: 'Plan: charge @ €0.197' },
+      { time: '23-09-2026 16:01:05', level: 'data', source: 'Zendure', message: 'soc=62% batterij=-340W net=12W gewenst=-352W overschot=0W strategie=dynamic plan=charge prijs=0.327 DEMO' },
+      { time: '23-09-2026 16:03:40', level: 'error', source: 'Zendure', message: 'P1 read failed (1x): Timeout', repeat: 3 },
+      { time: '23-09-2026 16:03:55', level: 'info', source: 'Zendure', message: 'P1-meter niet bereikbaar: regeling op stand-by' },
+    ],
     log: console.log,
   });
   await server.start(8480);

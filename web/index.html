@@ -61,6 +61,9 @@
   .setting input[type=number], .setting input[type=text], .setting input[type=password] { width: 160px; max-width: 100%; }
   .setting.changed .name::after { content: " •"; color: var(--amber); }
   .readonly { font-size: 13px; color: var(--muted); }
+  .log { font: 12px/1.45 ui-monospace, Consolas, monospace; background: var(--bg); border-radius: 6px;
+    padding: 10px; max-height: 340px; overflow: auto; white-space: pre-wrap; word-break: break-word; margin: 10px 0 0; }
+  .log .error { color: var(--red); } .log .warn { color: var(--amber); } .log .data { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -118,6 +121,20 @@
       <button id="reset" type="button" style="background:var(--grey)">Herstellen</button>
     </div>
     <div class="msg" id="saveMsg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Logboek</h2>
+    <p class="readonly">Loopt er iets mis? Download het diagnosebestand en stuur het door. Het bevat versies,
+      metingen, instellingen (zonder tokens of pincode), het plan en het logboek van de afgelopen dagen.</p>
+    <div class="controls">
+      <a href="/api/diagnostics" download><button type="button">Download diagnosebestand</button></a>
+      <button type="button" id="copyLog" style="background:var(--grey)">Kopieer logboek</button>
+      <label class="f" style="flex-direction:row;align-items:center;gap:6px">
+        <input type="checkbox" id="onlyEvents"> alleen meldingen (zonder meetregels)
+      </label>
+    </div>
+    <pre class="log" id="log">Laden…</pre>
   </div>
 </main>
 
@@ -324,7 +341,35 @@
     }
   });
 
+  let logLines = [];
+  async function refreshLog() {
+    try {
+      const { lines } = await api('/api/log?limit=300');
+      logLines = lines;
+      const shown = $('onlyEvents').checked ? lines.filter((l) => l.level !== 'data') : lines;
+      $('log').innerHTML = shown.slice().reverse().map((l) => `<span class="${esc(l.level)}">${esc(l.time)} `
+        + `${esc(l.level.toUpperCase())} [${esc(l.source)}] ${esc(l.message)}${l.repeat ? ` (${l.repeat}×)` : ''}</span>`)
+        .join('\n') || 'Nog geen regels.';
+    } catch (err) {
+      $('log').textContent = `Logboek niet beschikbaar: ${err.message}`;
+    }
+  }
+  $('onlyEvents').addEventListener('change', refreshLog);
+  $('copyLog').addEventListener('click', async () => {
+    const text = logLines.map((l) => `${l.time} ${l.level.toUpperCase()} [${l.source}] ${l.message}`
+      + `${l.repeat ? ` (${l.repeat}×)` : ''}`).join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      $('copyLog').textContent = 'Gekopieerd';
+    } catch (err) {
+      $('copyLog').textContent = 'Kopiëren niet toegestaan – gebruik download';
+    }
+    setTimeout(() => { $('copyLog').textContent = 'Kopieer logboek'; }, 2500);
+  });
+
   refreshStatus().then(loadSettings);
+  refreshLog();
+  setInterval(refreshLog, 30000);
   setInterval(refreshStatus, 5000);
 </script>
 </body>

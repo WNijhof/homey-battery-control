@@ -16,6 +16,7 @@ class FakeDevice {
           futureSlots: () => [], onUpdate: () => () => {}, setEntsoeToken() {}, formatDate: () => 'x',
         },
         batteries: () => [this],
+        logbook: { lines: [], add(level, source, ...parts) { this.lines.push([level, parts.join(' ')]); } },
         updateWebServer: () => {},
         triggers: {
           strategyChanged: { trigger: async () => {} },
@@ -190,6 +191,19 @@ async function makeDevice(demo, { p1Fails = false } = {}) {
   release();
   await inFlight;
   assert.deepStrictEqual(d.writes, [], 'no command after cleanup');
+
+  // logbook: one data line per minute, events as info
+  d = await makeDevice(true);
+  const lb = d.homey.app.logbook;
+  lb.lines = [];
+  await d.tick();
+  await d.tick();
+  const dataLines = lb.lines.filter(([level]) => level === 'data');
+  assert.strictEqual(dataLines.length, 1, 'max one data line per minute');
+  assert(/soc=50% batterij=0W net=600W gewenst=-?\d+W .*strategie=self_consumption .*DEMO/.test(dataLines[0][1]),
+    dataLines[0][1]);
+  await d.setStrategy('off');
+  assert(lb.lines.some(([level, msg]) => level === 'info' && /Strategy -> off/.test(msg)), 'strategy change logged');
 
   console.log('device tests ok');
 })().catch((err) => { console.error(err); process.exit(1); });

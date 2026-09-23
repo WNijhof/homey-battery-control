@@ -1485,7 +1485,21 @@ def build():
                   ['Lydos: waarschuwing „te veel verzoeken”', 'Ariston-cloud begrenst (HTTP 429)',
                    'Lydos-app pauzeert zelf; Flows minder vaak laten schakelen'],
               ], [46 * mm, 52 * mm, CONTENT_W - 98 * mm]),
-              H2('12.1 Storingslog'),
+              H2('12.1 Logboek en diagnosebestand'),
+              P('De app houdt een logboek bij van de afgelopen 2–3 dagen: alle gebeurtenissen (strategie- en '
+                'planwissels, demo aan/uit, gewijzigde instellingen, storingen) en elke minuut een meetregel met '
+                'laadniveau, batterij, net, gewenst vermogen, strategie, plan en prijs. Het logboek blijft bewaard na '
+                'een herstart. Herhaalde meldingen worden samengevoegd tot één regel met een teller.'),
+              *bullets([
+                  '<b>Thuis:</b> webpagina → blok <i>Logboek</i> → <b>Download diagnosebestand</b>. Dat ene tekstbestand '
+                  'bevat versies, metingen, instellingen (zonder tokens en pincode), het plan en het hele logboek. '
+                  'Stuur het mee met je vraag of melding.',
+                  '<b>Onderweg:</b> Homey-app → Instellingen → Apps → Batterij Regeling → <i>Diagnoserapport '
+                  'versturen</i>. Het rapport gaat naar het ontwikkelaarsaccount van de app en bevat dezelfde '
+                  'logregels.',
+                  '<b>Tijdens het testen:</b> <font name="Arial-Bold">homey app run</font> toont alle regels live.',
+              ]),
+              H2('12.2 Storingslog'),
               table([['Datum', 'Omschrijving storing', 'Oplossing / actie']] +
                     [[TextField(22 * mm, 16, name=f'st_{i}_d'), TextField(72 * mm, 16, name=f'st_{i}_o'),
                       TextField(CONTENT_W - 110 * mm, 16, name=f'st_{i}_a')] for i in range(8)],

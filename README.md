@@ -27,6 +27,11 @@ Nieuwe apparaten starten in **demo-modus**: de app leest en berekent alles (plan
 ## Webpagina
 Op `http://<ip van Homey>:8480` (alleen in het thuisnetwerk): alle metingen, het plan voor 24 uur, strategie en alle instellingen. Wijzigen met een pincode (instellingen → Webpagina); zonder pincode alleen-lezen.
 
+## Logboek
+De app houdt een logboek bij (gebeurtenissen + elke minuut een meetregel, 2–3 dagen, blijft bewaard na herstart).
+Webpagina → *Logboek* → **Download diagnosebestand**: één tekstbestand met versies, metingen, instellingen
+(zonder tokens/pincode), het plan en het logboek. Onderweg: Homey-app → Apps → Batterij Regeling → *Diagnoserapport versturen*.
+
 ## Strategieën
 
 | Strategie | Wat het doet |

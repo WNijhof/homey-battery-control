@@ -47,7 +47,13 @@ function request(port, method, path, body) {
     { id: 'p1_token', type: 'password', label: 'Token', group: 'Verbinding' },
     { id: 'web_pin', type: 'password', label: 'Pincode', group: 'Webpagina' },
   ];
-  const server = new WebServer({ page: '<html>ok</html>', getDevices: () => [device], getSchema: () => schema });
+  const server = new WebServer({
+    page: '<html>ok</html>',
+    getDevices: () => [device],
+    getSchema: () => schema,
+    getDiagnostics: () => '=== diagnose ===\nregel',
+    getRecentLog: (limit) => [{ level: 'info', source: 'app', message: `limit ${limit}` }],
+  });
   await server.start(0);
   const { port } = server.server.address();
 
@@ -87,6 +93,11 @@ function request(port, method, path, body) {
   r = await request(port, 'POST', '/api/strategy', { pin: '4321', strategy: 'self_consumption' });
   assert.strictEqual(r.status, 200);
   assert.strictEqual(device.strategy, 'self_consumption');
+
+  r = await request(port, 'GET', '/api/log?limit=50');
+  assert.strictEqual(JSON.parse(r.body).lines[0].message, 'limit 50', 'log lines');
+  r = await request(port, 'GET', '/api/diagnostics');
+  assert(/text\/plain/.test(r.type) && r.body.startsWith('=== diagnose'), 'diagnostics file');
 
   r = await request(port, 'GET', '/nope');
   assert.strictEqual(r.status, 404);

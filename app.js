@@ -5,13 +5,24 @@ const path = require('path');
 const Homey = require('homey');
 const PriceService = require('./lib/prices');
 const { WebServer } = require('./lib/webserver');
+const { Logbook, maskSettings } = require('./lib/logbook');
 
 const PRICE_REFRESH_MS = 30 * 60 * 1000;
+const LOG_PERSIST_MS = 5 * 60 * 1000;
 const BATTERY_DRIVERS = ['zendure', 'marstek', 'anker'];
 
 class BatteryControlApp extends Homey.App {
 
   async onInit() {
+    // first, so everything that follows can write to it
+    this.logbook = new Logbook({
+      timezone: this.homey.clock.getTimezone() || 'Europe/Amsterdam',
+      load: () => this.homey.settings.get('logbook') || [],
+      save: (lines) => this.homey.settings.set('logbook', lines),
+    });
+    this.logTimer = this.homey.setInterval(() => this.logbook.persist(), LOG_PERSIST_MS);
+    this.log(`App gestart, versie ${this.homey.manifest.version}, Homey ${this.homey.version}`);
+
     this.prices = new PriceService({
       timezone: this.homey.clock.getTimezone() || 'Europe/Amsterdam',
       log: this.log.bind(this),
@@ -29,13 +40,52 @@ class BatteryControlApp extends Homey.App {
       page: fs.readFileSync(path.join(__dirname, 'web', 'index.html'), 'utf8'),
       getDevices: () => this.batteries(),
       getSchema: (device) => this.settingsSchema(device.driver.id),
+      getDiagnostics: () => this.diagnosticsText(),
+      getRecentLog: (limit) => this.logbook.recent(limit),
       log: this.log.bind(this),
       error: this.error.bind(this),
     });
     // devices are initialised after the app; start the web page once they are there
     this.homey.setTimeout(() => this.updateWebServer(), 5000);
+  }
 
-    this.log('Battery Control started');
+  log(...args) {
+    super.log(...args);
+    if (this.logbook) this.logbook.add('info', 'app', ...args);
+  }
+
+  error(...args) {
+    super.error(...args);
+    if (this.logbook) this.logbook.add('error', 'app', ...args);
+  }
+
+  /** One text file for support: versions, batteries, settings (no secrets), plan and the log. */
+  diagnosticsText() {
+    const lines = [];
+    const now = this.logbook.formatTime(Date.now());
+    lines.push('=== Batterij Regeling – diagnose ===');
+    lines.push(`Gemaakt: ${now}`);
+    lines.push(`App: ${this.homey.manifest.id} v${this.homey.manifest.version} · Homey ${this.homey.version} · `
+      + `tijdzone ${this.homey.clock.getTimezone()}`);
+    const future = this.prices.futureSlots();
+    lines.push(`Prijzen: ${future.length} kwartieren bekend`
+      + `${future.length ? ` tot ${this.logbook.formatTime(future[future.length - 1].end)}` : ''}`);
+    for (const device of this.batteries()) {
+      lines.push('');
+      lines.push(`--- ${device.getName()} (${device.driver.id}, id ${device.getData().id}) ---`);
+      lines.push(`Beschikbaar: ${device.getAvailable()} · status: ${device.getCapabilityValue('battery_status')}`);
+      const caps = {};
+      for (const c of device.getCapabilities()) caps[c] = device.getCapabilityValue(c);
+      lines.push(`Metingen: ${JSON.stringify(caps)}`);
+      lines.push(`Instellingen: ${JSON.stringify(maskSettings(device.getSettings(), this.settingsSchema(device.driver.id)))}`);
+      const plan = device.plan.slots.slice(0, 96).map((s) => `${this.logbook.formatTime(s.start).slice(-8, -3)} `
+        + `${s.action[0]} ${s.price.toFixed(3)}`);
+      lines.push(`Plan (tijd, c=laden d=ontladen h=vasthouden, prijs): ${plan.join(' | ')}`);
+    }
+    lines.push('');
+    lines.push('=== Logboek (oudste eerst) ===');
+    lines.push(this.logbook.toText());
+    return lines.join('\n');
   }
 
   /** Flow cards are shared by all battery brands, so they are registered once here. */
@@ -146,6 +196,7 @@ class BatteryControlApp extends Homey.App {
   }
 
   async onUninit() {
+    if (this.logbook) this.logbook.persist();
     if (this.webServer) await this.webServer.stop();
   }
 
