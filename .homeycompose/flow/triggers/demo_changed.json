@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Demo mode changed",
+    "nl": "Demo-modus is veranderd"
+  },
+  "tokens": [
+    {
+      "name": "demo",
+      "type": "boolean",
+      "title": {
+        "en": "Demo mode",
+        "nl": "Demo-modus"
+      },
+      "example": true
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    }
+  ]
+}

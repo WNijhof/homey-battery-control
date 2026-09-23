@@ -1,0 +1,53 @@
+{
+  "title": {
+    "en": "Solar surplus has been above ... for ... minutes",
+    "nl": "Zonne-overschot is ... minuten boven ..."
+  },
+  "titleFormatted": {
+    "en": "Solar surplus has been above [[power]] W for [[minutes]] minutes",
+    "nl": "Zonne-overschot is [[minutes]] minuten boven [[power]] W"
+  },
+  "hint": {
+    "en": "Surplus = export + solar power going into the battery. Fires once when the condition becomes true.",
+    "nl": "Overschot = teruglevering + zonnestroom die de batterij in gaat. Gaat één keer af zodra de voorwaarde waar wordt."
+  },
+  "tokens": [
+    {
+      "name": "surplus",
+      "type": "number",
+      "title": {
+        "en": "Surplus (W)",
+        "nl": "Overschot (W)"
+      },
+      "example": 800
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "power",
+      "min": 0,
+      "max": 10000,
+      "step": 50,
+      "placeholder": {
+        "en": "Watt"
+      }
+    },
+    {
+      "type": "number",
+      "name": "minutes",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "placeholder": {
+        "en": "minutes",
+        "nl": "minuten"
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "title": {
+    "en": "Planned action is !{{|not}}",
+    "nl": "Geplande actie is !{{|niet}}"
+  },
+  "titleFormatted": {
+    "en": "Planned action is !{{|not}} [[action]]",
+    "nl": "Geplande actie is !{{|niet}} [[action]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "dropdown",
+      "name": "action",
+      "values": [
+        {
+          "id": "charge",
+          "label": {
+            "en": "Charge (cheap)",
+            "nl": "Laden (goedkoop)"
+          }
+        },
+        {
+          "id": "discharge",
+          "label": {
+            "en": "Discharge (expensive)",
+            "nl": "Ontladen (duur)"
+          }
+        },
+        {
+          "id": "hold",
+          "label": {
+            "en": "Hold",
+            "nl": "Vasthouden"
+          }
+        }
+      ]
+    }
+  ]
+}

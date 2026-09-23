@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Planned action changed",
+    "nl": "Geplande actie is veranderd"
+  },
+  "tokens": [
+    {
+      "name": "action",
+      "type": "string",
+      "title": {
+        "en": "Action",
+        "nl": "Actie"
+      },
+      "example": "charge"
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "title": {
+        "en": "Price",
+        "nl": "Prijs"
+      },
+      "example": 0.21
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Strategy",
+    "nl": "Strategie"
+  },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "icon": "/assets/icon.svg",
+  "values": [
+    {
+      "id": "off",
+      "title": {
+        "en": "Off (idle)",
+        "nl": "Uit (stand-by)"
+      }
+    },
+    {
+      "id": "self_consumption",
+      "title": {
+        "en": "Self-consumption (zero grid)",
+        "nl": "Zelfconsumptie (nul op de meter)"
+      }
+    },
+    {
+      "id": "solar_only",
+      "title": {
+        "en": "Solar charging only",
+        "nl": "Alleen laden met zon"
+      }
+    },
+    {
+      "id": "zero_import",
+      "title": {
+        "en": "Zero import (discharge only)",
+        "nl": "Nul import (alleen ontladen)"
+      }
+    },
+    {
+      "id": "dynamic",
+      "title": {
+        "en": "Dynamic prices",
+        "nl": "Dynamische prijzen"
+      }
+    },
+    {
+      "id": "charge",
+      "title": {
+        "en": "Force charge",
+        "nl": "Geforceerd laden"
+      }
+    },
+    {
+      "id": "discharge",
+      "title": {
+        "en": "Force discharge",
+        "nl": "Geforceerd ontladen"
+      }
+    },
+    {
+      "id": "peak_shaving",
+      "title": {
+        "en": "Standby / peak shaving",
+        "nl": "Stand-by / piekbegrenzing"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Battery level is !{{above|below}}",
+    "nl": "Laadniveau is !{{hoger|lager}} dan"
+  },
+  "titleFormatted": {
+    "en": "Battery level is !{{above|below}} [[percent]] %",
+    "nl": "Laadniveau is !{{hoger|lager}} dan [[percent]] %"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "percent",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    }
+  ]
+}

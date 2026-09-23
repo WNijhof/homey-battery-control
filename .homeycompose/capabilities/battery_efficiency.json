@@ -1,0 +1,16 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Learned efficiency",
+    "nl": "Geleerd rendement"
+  },
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "%"
+  },
+  "decimals": 1,
+  "uiComponent": "sensor",
+  "insights": true,
+  "icon": "/assets/icon.svg"
+}

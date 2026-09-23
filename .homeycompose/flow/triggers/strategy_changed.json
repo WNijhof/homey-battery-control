@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Strategy changed",
+    "nl": "Strategie is veranderd"
+  },
+  "tokens": [
+    {
+      "name": "strategy",
+      "type": "string",
+      "title": {
+        "en": "Strategy",
+        "nl": "Strategie"
+      },
+      "example": "dynamic"
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": {
+    "en": "Demo mode is !{{on|off}}",
+    "nl": "Demo-modus staat !{{aan|uit}}"
+  },
+  "hint": {
+    "en": "Use this in your own Flows (e.g. for the water heater) so they only act when the battery control is live.",
+    "nl": "Gebruik dit in je eigen Flows (bijv. voor de boiler), zodat die alleen iets doen als de regeling echt actief is."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    }
+  ]
+}

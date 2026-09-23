@@ -1,0 +1,14 @@
+{
+  "type": "enum",
+  "title": { "en": "Planned action", "nl": "Geplande actie" },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/icon.svg",
+  "values": [
+    { "id": "charge", "title": { "en": "Charge (cheap)", "nl": "Laden (goedkoop)" } },
+    { "id": "discharge", "title": { "en": "Discharge (expensive)", "nl": "Ontladen (duur)" } },
+    { "id": "hold", "title": { "en": "Hold", "nl": "Vasthouden" } },
+    { "id": "none", "title": { "en": "No prices", "nl": "Geen prijzen" } }
+  ]
+}

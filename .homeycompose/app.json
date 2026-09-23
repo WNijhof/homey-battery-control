@@ -1,0 +1,37 @@
+{
+  "id": "com.drpeppers.batterycontrol",
+  "version": "0.4.0",
+  "compatibility": ">=12.3.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Battery Control",
+    "nl": "Batterij Regeling"
+  },
+  "description": {
+    "en": "Smart home battery control: zero-grid, solar and dynamic price optimisation",
+    "nl": "Slimme thuisbatterij-regeling: nul-op-de-meter, zon en dynamische prijzen"
+  },
+  "category": [
+    "energy"
+  ],
+  "permissions": [],
+  "brandColor": "#1F8A4C",
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "DrPeppers",
+    "email": "drpeppers@duck.com"
+  },
+  "source": "https://github.com/WNijhof/homey-battery-control",
+  "homepage": "https://github.com/WNijhof/homey-battery-control",
+  "support": "https://github.com/WNijhof/homey-battery-control/issues",
+  "bugs": {
+    "url": "https://github.com/WNijhof/homey-battery-control/issues"
+  }
+}

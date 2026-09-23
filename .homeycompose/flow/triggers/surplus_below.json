@@ -1,0 +1,49 @@
+{
+  "title": {
+    "en": "Solar surplus has been below ... for ... minutes",
+    "nl": "Zonne-overschot is ... minuten onder ..."
+  },
+  "titleFormatted": {
+    "en": "Solar surplus has been below [[power]] W for [[minutes]] minutes",
+    "nl": "Zonne-overschot is [[minutes]] minuten onder [[power]] W"
+  },
+  "tokens": [
+    {
+      "name": "surplus",
+      "type": "number",
+      "title": {
+        "en": "Surplus (W)",
+        "nl": "Overschot (W)"
+      },
+      "example": 800
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "power",
+      "min": 0,
+      "max": 10000,
+      "step": 50,
+      "placeholder": {
+        "en": "Watt"
+      }
+    },
+    {
+      "type": "number",
+      "name": "minutes",
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "placeholder": {
+        "en": "minutes",
+        "nl": "minuten"
+      }
+    }
+  ]
+}

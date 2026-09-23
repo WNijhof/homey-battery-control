@@ -1,0 +1,11 @@
+{
+  "type": "number",
+  "title": { "en": "Electricity price", "nl": "Stroomprijs" },
+  "getable": true,
+  "setable": false,
+  "units": { "en": "€/kWh" },
+  "decimals": 3,
+  "uiComponent": "sensor",
+  "insights": true,
+  "icon": "/assets/icon.svg"
+}

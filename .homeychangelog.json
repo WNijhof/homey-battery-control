@@ -1,0 +1,18 @@
+{
+  "0.1.0": {
+    "en": "First version: zero-grid control, dynamic prices, strategies and Flow cards.",
+    "nl": "Eerste versie: nul-op-de-meter, dynamische prijzen, strategieën en Flow-kaarten."
+  },
+  "0.2.0": {
+    "en": "P1 failsafe (stand-by without meter), solar forecast, savings in euro, learned efficiency, network scan while pairing, HomeWizard API v2, ENTSO-E backup prices, dashboard widget, solar surplus Flow cards, support for multiple batteries.",
+    "nl": "P1-vangnet (stand-by zonder meting), zonverwachting, opbrengst in euro, geleerd rendement, netwerkscan bij koppelen, HomeWizard API v2, ENTSO-E als reserveprijsbron, dashboardwidget, Flow-kaarten voor zonne-overschot, ondersteuning voor meerdere batterijen."
+  },
+  "0.3.0": {
+    "en": "Demo mode (read only, on by default for new devices): the app reads and calculates everything but never sends commands to the battery. New: desired battery power, Flow cards for demo mode.",
+    "nl": "Demo-modus (alleen uitlezen, standaard aan bij nieuwe apparaten): de app leest en berekent alles, maar stuurt nooit opdrachten naar de batterij. Nieuw: gewenst batterijvermogen, Flow-kaarten voor de demo-modus."
+  },
+  "0.4.0": {
+    "en": "Local web page with all data and settings (PIN protected). New strategy Zero import; force charge/discharge until a goal with a follow-up strategy; configurable action per price period; grid import/export limits on top of every strategy; direction hysteresis.",
+    "nl": "Lokale webpagina met alle gegevens en instellingen (beveiligd met pincode). Nieuwe strategie Nul import; geforceerd laden/ontladen tot een doel met vervolgstrategie; instelbare actie per prijsperiode; import-/exportgrens bovenop elke strategie; hysterese laden/ontladen."
+  }
+}

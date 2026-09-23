@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Batterij Regeling</title>
+<style>
+  :root {
+    --bg: #f4f6f7; --card: #ffffff; --text: #1d252b; --muted: #5b6770; --line: #dde3e7;
+    --green: #1f8a4c; --green-soft: #e8f4ec; --amber: #d08a1e; --amber-soft: #fdf4e3; --grey: #9aa5ad;
+    --red: #b3261e; --red-soft: #fbe9e7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15191c; --card: #1f2427; --text: #e8ecee; --muted: #9aa5ad; --line: #30383d;
+      --green-soft: #1d3326; --amber-soft: #3a2f1c; --red-soft: #3a1f1d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  header { background: var(--green); color: #fff; padding: 14px 16px; }
+  header .row { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  header h1 { font-size: 20px; margin: 0; font-weight: 600; }
+  .badge { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: var(--amber-soft); color: var(--amber); }
+  .updated { margin-left: auto; font-size: 12px; opacity: .85; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .alert { background: var(--red-soft); color: var(--red); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+  .status { font-size: 17px; margin: 4px 0 14px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 10px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .tile .label { font-size: 12px; color: var(--muted); }
+  .tile .value { font-size: 22px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .tile .sub { font-size: 12px; color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin-top: 16px; }
+  .card h2 { font-size: 16px; margin: 0 0 10px; }
+  svg { width: 100%; height: 200px; display: block; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 6px; flex-wrap: wrap; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .events { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 8px; margin-top: 10px; }
+  .event { font-size: 13px; padding: 6px 8px; border-radius: 6px; background: var(--bg); }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+  label.f { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); gap: 4px; }
+  input, select, button { font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line);
+    border-radius: 6px; padding: 7px 9px; }
+  input[type=checkbox] { width: 18px; height: 18px; padding: 0; }
+  button { background: var(--green); color: #fff; border: 0; cursor: pointer; font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .msg { font-size: 13px; margin-top: 8px; min-height: 18px; }
+  .msg.err { color: var(--red); } .msg.ok { color: var(--green); }
+  details { border-top: 1px solid var(--line); }
+  details:first-of-type { border-top: 0; }
+  summary { cursor: pointer; padding: 10px 0; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 12px 20px; padding-bottom: 12px; }
+  .setting .name { font-size: 14px; font-weight: 600; }
+  .setting .hint { font-size: 12px; color: var(--muted); margin-top: 4px; padding: 6px 8px; background: var(--bg); border-radius: 6px; }
+  .help { width: 18px; height: 18px; padding: 0; margin-left: 6px; border-radius: 50%; font-size: 12px; line-height: 18px;
+    text-align: center; background: var(--line); color: var(--text); font-weight: 700; vertical-align: 1px; }
+  .help:hover, .help[aria-expanded=true] { background: var(--green); color: #fff; }
+  .setting .input { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .setting input[type=number], .setting input[type=text], .setting input[type=password] { width: 160px; max-width: 100%; }
+  .setting.changed .name::after { content: " •"; color: var(--amber); }
+  .readonly { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <h1 id="title">Batterij Regeling</h1>
+    <span class="badge" id="demo" hidden>DEMO</span>
+    <span class="updated" id="updated">verbinden…</span>
+  </div>
+</header>
+<main>
+  <div class="alert" id="alert" hidden></div>
+  <div class="status" id="status"></div>
+  <div class="tiles" id="tiles"></div>
+
+  <div class="card">
+    <h2>Plan komende 24 uur</h2>
+    <div id="chart"></div>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--green)"></span>laden</span>
+      <span><span class="dot" style="background:var(--amber)"></span>ontladen</span>
+      <span><span class="dot" style="background:var(--grey)"></span>vasthouden</span>
+      <span>– – ontlaaddrempel</span>
+    </div>
+    <div class="events" id="events"></div>
+  </div>
+
+  <div class="card">
+    <h2>Bediening</h2>
+    <div class="controls">
+      <label class="f">Strategie
+        <select id="strategy">
+          <option value="off">Uit (stand-by)</option>
+          <option value="self_consumption">Zelfconsumptie</option>
+          <option value="solar_only">Alleen laden met zon</option>
+          <option value="zero_import">Nul import (alleen ontladen)</option>
+          <option value="dynamic">Dynamische prijzen</option>
+          <option value="charge">Geforceerd laden</option>
+          <option value="discharge">Geforceerd ontladen</option>
+          <option value="peak_shaving">Stand-by / piekbegrenzing</option>
+        </select>
+      </label>
+      <label class="f">Pincode <input id="pin" type="password" inputmode="numeric" autocomplete="off" size="8"></label>
+      <button id="setStrategy">Strategie toepassen</button>
+    </div>
+    <div class="msg" id="controlMsg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Instellingen</h2>
+    <p class="readonly" id="readonly" hidden>Alleen-lezen: stel in Homey een pincode in (apparaat → instellingen → Webpagina) om hier te kunnen wijzigen.</p>
+    <form id="settings"></form>
+    <div class="controls">
+      <button id="save" type="button">Wijzigingen opslaan</button>
+      <button id="reset" type="button" style="background:var(--grey)">Herstellen</button>
+    </div>
+    <div class="msg" id="saveMsg"></div>
+  </div>
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const ACTION = { charge: 'laden', discharge: 'ontladen', hold: 'vasthouden', none: 'geen prijzen' };
+  const COLOR = { charge: 'var(--green)', discharge: 'var(--amber)', hold: 'var(--grey)' };
+  const nf = (v, d = 0) => (v === null || v === undefined ? '–' : Number(v).toLocaleString('nl-NL', { minimumFractionDigits: d, maximumFractionDigits: d }));
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const time = (ms) => new Date(ms).toLocaleTimeString('nl-NL', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+  let deviceId = null;
+  let strategyDirty = false; // user picked a strategy that is not applied yet
+  let settingsSchema = [];
+
+  async function api(path, options) {
+    const res = await fetch(path, options);
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+    return json;
+  }
+
+  // Homey convention: positive = charging
+  const direction = (w) => (w > 0 ? 'laden' : w < 0 ? 'ontladen' : 'stand-by');
+
+  function tile(label, value, sub = '') {
+    return `<div class="tile"><div class="label">${esc(label)}</div><div class="value">${value}</div>`
+      + `${sub ? `<div class="sub">${esc(sub)}</div>` : ''}</div>`;
+  }
+
+  function chart(slots, threshold) {
+    if (!slots.length) return '<p class="readonly">Geen prijzen beschikbaar.</p>';
+    const w = 960; const h = 200; const n = slots.length; const bw = w / n;
+    const prices = slots.map((s) => s.price);
+    const max = Math.max(...prices, threshold || 0, 0.01); const min = Math.min(...prices, 0);
+    const y = (v) => h - 18 - ((v - min) / (max - min)) * (h - 28);
+    let svg = '';
+    slots.forEach((s, i) => {
+      const top = y(Math.max(s.price, 0)); const zero = y(0); const bottom = s.price < 0 ? y(s.price) : zero;
+      svg += `<rect x="${(i * bw).toFixed(1)}" y="${Math.min(top, zero).toFixed(1)}" width="${Math.max(bw - 1, 1).toFixed(1)}"`
+        + ` height="${Math.max(Math.abs(bottom - top), 1).toFixed(1)}" fill="${COLOR[s.action]}">`
+        + `<title>${time(s.start)} · € ${nf(s.price, 3)} · ${ACTION[s.action]}${s.solarW ? ` · zon ${s.solarW} W` : ''}</title></rect>`;
+      const d = new Date(s.start);
+      if (d.getMinutes() === 0 && d.getHours() % 3 === 0) {
+        svg += `<text x="${(i * bw + 2).toFixed(1)}" y="${h - 3}" font-size="11" fill="currentColor" opacity=".6">${String(d.getHours()).padStart(2, '0')}:00</text>`;
+      }
+    });
+    if (threshold) {
+      svg += `<line x1="0" x2="${w}" y1="${y(threshold).toFixed(1)}" y2="${y(threshold).toFixed(1)}" stroke="currentColor" stroke-dasharray="5 4" opacity=".4"/>`;
+    }
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${svg}</svg>`;
+  }
+
+  function events(slots) {
+    const out = [];
+    let prev = null;
+    for (const s of slots) {
+      if (s.action !== prev && s.action !== 'hold') out.push(s);
+      prev = s.action;
+      if (out.length >= 6) break;
+    }
+    return out.map((s) => `<div class="event">${time(s.start)} → <b>${ACTION[s.action]}</b> (€ ${nf(s.price, 3)})</div>`).join('')
+      || '<div class="event">Geen laad- of ontlaadmomenten gepland.</div>';
+  }
+
+  async function refreshStatus() {
+    try {
+      const { devices, time: t } = await api('/api/status');
+      const d = devices[0];
+      if (!d) { $('status').textContent = 'Nog geen batterij gekoppeld in Homey.'; return; }
+      deviceId = d.id;
+      $('title').textContent = d.name || 'Batterij Regeling';
+      $('demo').hidden = !d.demo;
+      const alerts = [d.warning, d.available ? null : 'Batterij niet bereikbaar'].filter(Boolean);
+      $('alert').hidden = !alerts.length;
+      $('alert').textContent = alerts.join(' · ');
+      $('status').innerHTML = `${esc(d.status || '')}`;
+      const v = d.values;
+      $('tiles').innerHTML = [
+        tile('Laadniveau', `${nf(d.soc)} %`),
+        tile('Batterij', `${nf(Math.abs(d.power ?? 0))} W`, direction(d.power)),
+        tile(d.demo ? 'Zou sturen (demo)' : 'Gewenst', `${nf(Math.abs(v.setpoint ?? 0))} W`, direction(v.setpoint)),
+        tile('Net (P1)', `${nf(Math.abs(v.grid ?? 0))} W`, v.grid > 0 ? 'afname' : v.grid < 0 ? 'teruglevering' : ''),
+        tile('Zonne-overschot', `${nf(v.surplus)} W`),
+        tile('Stroomprijs nu', `€ ${nf(d.price, 3)}`, ACTION[v.plan] || ''),
+        tile('Opbrengst vandaag', `€ ${nf(d.savingsToday, 2)}`, `totaal € ${nf(v.savingsTotal, 2)}`),
+        tile('Geladen / ontladen', `${nf(v.charged, 1)} / ${nf(v.discharged, 1)}`, 'kWh totaal'),
+        tile('Rendement (geleerd)', v.efficiency ? `${nf(v.efficiency, 1)} %` : '–', v.efficiency ? '' : 'nog te weinig gegevens'),
+        tile('Zon verwacht vandaag', v.forecastToday ? `${nf(v.forecastToday, 1)} kWh` : '–'),
+      ].join('');
+      $('chart').innerHTML = chart(d.slots || [], d.threshold);
+      $('events').innerHTML = events(d.slots || []);
+      if (!strategyDirty) $('strategy').value = d.strategy;
+      $('updated').textContent = `bijgewerkt ${new Date(t).toLocaleTimeString('nl-NL')}`;
+    } catch (err) {
+      $('updated').textContent = `geen verbinding (${err.message})`;
+    }
+  }
+
+  function renderSettings(data) {
+    settingsSchema = data.fields;
+    $('readonly').hidden = data.pinSet;
+    $('save').disabled = !data.pinSet;
+    const groups = [];
+    for (const f of data.fields) {
+      let g = groups.find((x) => x.name === f.group);
+      if (!g) { g = { name: f.group, fields: [] }; groups.push(g); }
+      g.fields.push(f);
+    }
+    $('settings').innerHTML = groups.map((g, i) => `<details${i < 2 ? ' open' : ''}><summary>${esc(g.name)}</summary><div class="grid">${
+      g.fields.map((f) => {
+        let input;
+        if (f.type === 'checkbox') input = `<input type="checkbox" name="${f.id}" ${f.value ? 'checked' : ''}>`;
+        else if (f.type === 'number') input = `<input type="number" name="${f.id}" value="${esc(f.value)}" ${f.min !== undefined ? `min="${f.min}"` : ''} ${f.max !== undefined ? `max="${f.max}"` : ''} step="${f.step || 'any'}"> ${esc(f.units)}`;
+        else if (f.type === 'dropdown') input = `<select name="${f.id}">${f.values.map((v) => `<option value="${esc(v.id)}"${v.id === f.value ? ' selected' : ''}>${esc(v.label)}</option>`).join('')}</select>`;
+        else if (f.type === 'password') input = `<input type="password" name="${f.id}" placeholder="${f.isSet ? '•••• (ingesteld)' : 'niet ingesteld'}" autocomplete="new-password">`;
+        else input = `<input type="text" name="${f.id}" value="${esc(f.value)}">`;
+        const help = f.hint
+          ? `<button type="button" class="help" title="${esc(f.hint)}" aria-label="Uitleg" aria-expanded="false">?</button>`
+          : '';
+        return `<div class="setting" data-id="${f.id}"><div class="name">${esc(f.label)}${help}</div>`
+          + `${f.hint ? `<div class="hint" hidden>${esc(f.hint)}</div>` : ''}<div class="input">${input}</div></div>`;
+      }).join('')}</div></details>`).join('');
+    $('settings').querySelectorAll('.help').forEach((btn) => btn.addEventListener('click', () => {
+      const hint = btn.closest('.setting').querySelector('.hint');
+      hint.hidden = !hint.hidden;
+      btn.setAttribute('aria-expanded', String(!hint.hidden));
+    }));
+    $('settings').querySelectorAll('input, select').forEach((el) => el.addEventListener('input', () => {
+      el.closest('.setting').classList.add('changed');
+    }));
+  }
+
+  async function loadSettings() {
+    try {
+      renderSettings(await api(`/api/settings${deviceId ? `?device=${encodeURIComponent(deviceId)}` : ''}`));
+      $('saveMsg').textContent = '';
+    } catch (err) {
+      $('saveMsg').className = 'msg err';
+      $('saveMsg').textContent = err.message;
+    }
+  }
+
+  function changedSettings() {
+    const out = {};
+    $('settings').querySelectorAll('.setting.changed').forEach((row) => {
+      const el = row.querySelector('input, select');
+      const f = settingsSchema.find((x) => x.id === row.dataset.id);
+      if (f.type === 'checkbox') out[f.id] = el.checked;
+      else if (f.type === 'number') out[f.id] = el.value === '' ? f.value : Number(el.value);
+      else out[f.id] = el.value;
+    });
+    return out;
+  }
+
+  function askPin() {
+    const pin = $('pin').value || window.prompt('Pincode');
+    if (pin) $('pin').value = pin;
+    return pin;
+  }
+
+  $('save').addEventListener('click', async () => {
+    const settings = changedSettings();
+    const msg = $('saveMsg');
+    if (!Object.keys(settings).length) { msg.className = 'msg'; msg.textContent = 'Niets gewijzigd.'; return; }
+    const pin = askPin();
+    if (!pin) return;
+    $('save').disabled = true;
+    try {
+      const res = await api('/api/settings', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device: deviceId, pin, settings }),
+      });
+      await loadSettings();
+      msg.className = 'msg ok';
+      msg.textContent = res.changed.length ? `Opgeslagen: ${res.changed.length} instelling(en).` : 'Niets gewijzigd.';
+      refreshStatus();
+    } catch (err) {
+      msg.className = 'msg err';
+      msg.textContent = err.message;
+    } finally {
+      $('save').disabled = false;
+    }
+  });
+
+  $('reset').addEventListener('click', loadSettings);
+  $('strategy').addEventListener('change', () => { strategyDirty = true; });
+
+  $('setStrategy').addEventListener('click', async () => {
+    const msg = $('controlMsg');
+    const pin = askPin();
+    if (!pin) return;
+    try {
+      await api('/api/strategy', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device: deviceId, pin, strategy: $('strategy').value }),
+      });
+      msg.className = 'msg ok';
+      msg.textContent = 'Strategie aangepast.';
+      strategyDirty = false;
+      refreshStatus();
+    } catch (err) {
+      msg.className = 'msg err';
+      msg.textContent = err.message;
+    }
+  });
+
+  refreshStatus().then(loadSettings);
+  setInterval(refreshStatus, 5000);
+</script>
+</body>
+</html>

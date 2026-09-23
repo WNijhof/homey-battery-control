@@ -1,0 +1,31 @@
+{
+  "title": {
+    "en": "Discharge with power",
+    "nl": "Ontladen met vermogen"
+  },
+  "titleFormatted": {
+    "en": "Discharge with [[power]] W",
+    "nl": "Ontladen met [[power]] W"
+  },
+  "hint": {
+    "en": "Switches to the force-discharge strategy",
+    "nl": "Schakelt naar de strategie geforceerd ontladen"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "power",
+      "min": 50,
+      "max": 2400,
+      "step": 50,
+      "placeholder": {
+        "en": "Watt"
+      }
+    }
+  ]
+}

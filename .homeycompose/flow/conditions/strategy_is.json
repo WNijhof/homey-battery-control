@@ -1,0 +1,79 @@
+{
+  "title": {
+    "en": "Strategy is !{{|not}}",
+    "nl": "Strategie is !{{|niet}}"
+  },
+  "titleFormatted": {
+    "en": "Strategy is !{{|not}} [[strategy]]",
+    "nl": "Strategie is !{{|niet}} [[strategy]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "dropdown",
+      "name": "strategy",
+      "values": [
+        {
+          "id": "off",
+          "label": {
+            "en": "Off (idle)",
+            "nl": "Uit (stand-by)"
+          }
+        },
+        {
+          "id": "self_consumption",
+          "label": {
+            "en": "Self-consumption (zero grid)",
+            "nl": "Zelfconsumptie (nul op de meter)"
+          }
+        },
+        {
+          "id": "solar_only",
+          "label": {
+            "en": "Solar charging only",
+            "nl": "Alleen laden met zon"
+          }
+        },
+        {
+          "id": "zero_import",
+          "label": {
+            "en": "Zero import (discharge only)",
+            "nl": "Nul import (alleen ontladen)"
+          }
+        },
+        {
+          "id": "dynamic",
+          "label": {
+            "en": "Dynamic prices",
+            "nl": "Dynamische prijzen"
+          }
+        },
+        {
+          "id": "charge",
+          "label": {
+            "en": "Force charge",
+            "nl": "Geforceerd laden"
+          }
+        },
+        {
+          "id": "discharge",
+          "label": {
+            "en": "Force discharge",
+            "nl": "Geforceerd ontladen"
+          }
+        },
+        {
+          "id": "peak_shaving",
+          "label": {
+            "en": "Standby / peak shaving",
+            "nl": "Stand-by / piekbegrenzing"
+          }
+        }
+      ]
+    }
+  ]
+}

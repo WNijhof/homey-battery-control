@@ -1,0 +1,31 @@
+{
+  "title": {
+    "en": "Charge with power",
+    "nl": "Laden met vermogen"
+  },
+  "titleFormatted": {
+    "en": "Charge with [[power]] W",
+    "nl": "Laden met [[power]] W"
+  },
+  "hint": {
+    "en": "Switches to the force-charge strategy",
+    "nl": "Schakelt naar de strategie geforceerd laden"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "power",
+      "min": 50,
+      "max": 3200,
+      "step": 50,
+      "placeholder": {
+        "en": "Watt"
+      }
+    }
+  ]
+}

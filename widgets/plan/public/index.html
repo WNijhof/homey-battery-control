@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body {
+      margin: 0;
+      padding: 12px 14px;
+      font-family: var(--homey-font-family, -apple-system, sans-serif);
+      color: var(--homey-text-color, #1d252b);
+    }
+    .top { display: flex; align-items: baseline; gap: 10px; }
+    .soc { font-size: 28px; font-weight: 600; }
+    .sub { font-size: 12px; opacity: .7; }
+    .row { display: flex; justify-content: space-between; font-size: 12px; margin-top: 2px; }
+    .legend { display: flex; gap: 10px; font-size: 11px; opacity: .8; margin-top: 4px; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; }
+    svg { width: 100%; height: 110px; margin-top: 8px; display: block; }
+    .empty { font-size: 13px; opacity: .7; padding: 20px 0; }
+    .demo {
+      font-size: 11px; font-weight: 600; color: #8a5a00; background: #fdf4e3;
+      border-radius: 4px; padding: 2px 6px; margin-bottom: 4px; display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"><div class="empty">Laden…</div></div>
+
+  <script>
+    const COLORS = { charge: '#1F8A4C', discharge: '#D08A1E', hold: '#9AA5AD' };
+    const LABELS = { charge: 'laden', discharge: 'ontladen', hold: 'vasthouden' };
+    const euro = (v) => (v === null || v === undefined ? '–' : `€ ${Number(v).toFixed(3).replace('.', ',')}`);
+
+    function chart(slots, threshold) {
+      const w = 300;
+      const h = 110;
+      const n = slots.length;
+      const prices = slots.map((s) => s.price);
+      const max = Math.max(...prices, threshold || 0, 0.01);
+      const min = Math.min(...prices, 0);
+      const y = (v) => h - 14 - ((v - min) / (max - min)) * (h - 20);
+      const bw = w / n;
+      let bars = '';
+      slots.forEach((s, i) => {
+        const top = y(Math.max(s.price, 0));
+        const base = y(Math.min(s.price, 0) < 0 ? s.price : 0);
+        bars += `<rect x="${(i * bw).toFixed(2)}" y="${Math.min(top, y(0)).toFixed(1)}" width="${Math.max(bw - 0.6, 0.6).toFixed(2)}"`
+          + ` height="${Math.max(Math.abs(y(0) - (s.price < 0 ? base : top)), 1).toFixed(1)}" fill="${COLORS[s.action]}" rx="0.6"/>`;
+      });
+      // hour labels every 6 hours
+      let labels = '';
+      slots.forEach((s, i) => {
+        const d = new Date(s.start);
+        if (d.getMinutes() === 0 && d.getHours() % 6 === 0) {
+          labels += `<text x="${(i * bw).toFixed(1)}" y="${h - 2}" font-size="9" fill="currentColor" opacity=".6">${String(d.getHours()).padStart(2, '0')}:00</text>`;
+        }
+      });
+      const line = threshold
+        ? `<line x1="0" x2="${w}" y1="${y(threshold).toFixed(1)}" y2="${y(threshold).toFixed(1)}" stroke="currentColor" stroke-dasharray="3 3" opacity=".35"/>`
+        : '';
+      return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${bars}${line}`
+        + `<line x1="0.5" x2="0.5" y1="0" y2="${h - 12}" stroke="currentColor" opacity=".6"/>${labels}</svg>`;
+    }
+
+    function render(data) {
+      const root = document.getElementById('root');
+      if (!data) {
+        root.innerHTML = '<div class="empty">Nog geen batterij gekoppeld.</div>';
+        return;
+      }
+      const slots = (data.slots || []).slice(0, 96);
+      const current = slots[0];
+      root.innerHTML = `
+        ${data.demo ? '<div class="demo">DEMO – de batterij volgt zijn eigen programma</div>' : ''}
+        <div class="top">
+          <div class="soc">${data.soc ?? '–'}%</div>
+          <div class="sub">${data.status || ''}</div>
+        </div>
+        <div class="row">
+          <span>Nu: ${euro(data.price)}${current ? ` · ${LABELS[current.action]}` : ''}</span>
+          <span>Vandaag: € ${(data.savingsToday ?? 0).toFixed(2).replace('.', ',')}</span>
+        </div>
+        ${slots.length ? chart(slots, data.threshold) : '<div class="empty">Geen prijzen beschikbaar.</div>'}
+        <div class="legend">
+          <span><span class="dot" style="background:${COLORS.charge}"></span>laden</span>
+          <span><span class="dot" style="background:${COLORS.discharge}"></span>ontladen</span>
+          <span><span class="dot" style="background:${COLORS.hold}"></span>vasthouden</span>
+        </div>`;
+    }
+
+    function onHomeyReady(Homey) {
+      const load = () => Homey.api('GET', '/', {}).then(render).catch((err) => {
+        document.getElementById('root').innerHTML = `<div class="empty">${err.message || err}</div>`;
+      });
+      load().finally(() => Homey.ready({ height: 230 }));
+      setInterval(load, 60 * 1000);
+    }
+  </script>
+</body>
+</html>

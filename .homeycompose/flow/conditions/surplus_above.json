@@ -1,0 +1,27 @@
+{
+  "title": {
+    "en": "Solar surplus is !{{above|below}}",
+    "nl": "Zonne-overschot is !{{hoger|lager}} dan"
+  },
+  "titleFormatted": {
+    "en": "Solar surplus is !{{above|below}} [[power]] W",
+    "nl": "Zonne-overschot is !{{hoger|lager}} dan [[power]] W"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "power",
+      "min": 0,
+      "max": 10000,
+      "step": 50,
+      "placeholder": {
+        "en": "Watt"
+      }
+    }
+  ]
+}

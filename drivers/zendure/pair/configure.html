@@ -1,0 +1,92 @@
+<header class="homey-header">
+  <h1 class="homey-title" data-i18n="pair.title">Batterij koppelen</h1>
+  <p class="homey-subtitle">Zoek automatisch, of vul de IP-adressen van je Zendure en HomeWizard P1-meter zelf in.</p>
+</header>
+
+<button class="homey-button-secondary-full" id="scan" type="button">Zoek in mijn netwerk</button>
+<p class="homey-form-hint" id="scanStatus"></p>
+
+<form class="homey-form" id="form">
+  <div class="homey-form-group">
+    <label class="homey-form-label" for="zendureIp">Zendure SolarFlow IP-adres</label>
+    <input class="homey-form-input" id="zendureIp" type="text" placeholder="192.168.1.50" inputmode="decimal" list="zendureList" />
+    <datalist id="zendureList"></datalist>
+  </div>
+  <div class="homey-form-group">
+    <label class="homey-form-label" for="p1Ip">HomeWizard P1 IP-adres</label>
+    <input class="homey-form-input" id="p1Ip" type="text" placeholder="192.168.1.60" inputmode="decimal" list="p1List" />
+    <datalist id="p1List"></datalist>
+  </div>
+  <div class="homey-form-group">
+    <label class="homey-form-checkbox">
+      <input class="homey-form-checkbox-input" id="useV2" type="checkbox" />
+      <span class="homey-form-checkbox-checkmark"></span>
+      <span class="homey-form-checkbox-text">Ik gebruik HomeWizard API v2 (token later via Repareren)</span>
+    </label>
+  </div>
+  <p class="homey-form-hint">
+    Tip: geef beide apparaten een vast IP-adres in je router. Zet in de HomeWizard Energy-app
+    bij de P1-meter "Lokale API" aan.
+  </p>
+  <button class="homey-button-primary-full" id="submit" type="submit">Verbinden</button>
+</form>
+
+<script type="application/javascript">
+  const form = document.getElementById('form');
+  const button = document.getElementById('submit');
+  const scanButton = document.getElementById('scan');
+  const scanStatus = document.getElementById('scanStatus');
+
+  function fill(listId, inputId, items, label) {
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    items.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item.ip;
+      option.label = label(item);
+      list.appendChild(option);
+    });
+    if (items.length === 1 || (items.length && !document.getElementById(inputId).value)) {
+      document.getElementById(inputId).value = items[0].ip;
+    }
+  }
+
+  scanButton.addEventListener('click', async () => {
+    scanButton.classList.add('is-loading');
+    scanButton.disabled = true;
+    scanStatus.textContent = 'Zoeken… dit duurt 10–20 seconden.';
+    try {
+      const result = await Homey.emit('scan');
+      const p1s = result.homewizard.filter((h) => /P1/i.test(h.type) || /P1/i.test(h.product));
+      fill('zendureList', 'zendureIp', result.zendure, (z) => `${z.product} (${z.sn})`);
+      fill('p1List', 'p1Ip', p1s, (h) => h.product);
+      scanStatus.textContent = `Gevonden: ${result.zendure.length} Zendure, ${p1s.length} P1-meter(s).`
+        + (result.zendure.length > 1 || p1s.length > 1 ? ' Kies het juiste adres in de lijst.' : '');
+    } catch (err) {
+      scanStatus.textContent = `Zoeken mislukt: ${err.message || err}. Vul de adressen zelf in.`;
+    } finally {
+      scanButton.classList.remove('is-loading');
+      scanButton.disabled = false;
+    }
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    button.classList.add('is-loading');
+    button.disabled = true;
+    try {
+      const device = await Homey.emit('configure', {
+        zendureIp: document.getElementById('zendureIp').value,
+        p1Ip: document.getElementById('p1Ip').value,
+        useV2: document.getElementById('useV2').checked,
+      });
+      await Homey.createDevice(device);
+      Homey.done();
+    } catch (err) {
+      Homey.alert(err.message || String(err), 'error');
+    } finally {
+      button.classList.remove('is-loading');
+      button.disabled = false;
+    }
+  });
+</script>

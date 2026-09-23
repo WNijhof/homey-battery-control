@@ -1,0 +1,27 @@
+{
+  "title": {
+    "en": "Set grid target",
+    "nl": "Net-doelwaarde instellen"
+  },
+  "titleFormatted": {
+    "en": "Set grid target to [[power]] W",
+    "nl": "Zet net-doelwaarde op [[power]] W"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "number",
+      "name": "power",
+      "min": -500,
+      "max": 500,
+      "step": 5,
+      "placeholder": {
+        "en": "Watt"
+      }
+    }
+  ]
+}

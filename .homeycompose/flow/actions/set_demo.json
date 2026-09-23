@@ -1,0 +1,37 @@
+{
+  "title": {
+    "en": "Turn demo mode on/off",
+    "nl": "Demo-modus aan/uit zetten"
+  },
+  "titleFormatted": {
+    "en": "Turn demo mode [[enabled]]",
+    "nl": "Zet demo-modus [[enabled]]"
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=zendure"
+    },
+    {
+      "type": "dropdown",
+      "name": "enabled",
+      "values": [
+        {
+          "id": "on",
+          "label": {
+            "en": "on",
+            "nl": "aan"
+          }
+        },
+        {
+          "id": "off",
+          "label": {
+            "en": "off",
+            "nl": "uit"
+          }
+        }
+      ]
+    }
+  ]
+}

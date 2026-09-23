@@ -1,0 +1,14 @@
+{
+  "name": "com.drpeppers.batterycontrol",
+  "version": "0.4.0",
+  "description": "Slimme thuisbatterij-aansturing voor Homey (Zendure + HomeWizard P1 + dynamische prijzen)",
+  "main": "app.js",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node test/web.test.js && node test/device.test.js && node test/extra.test.js && node test/surplus.test.js && node test/planner.test.js"
+  }
+}

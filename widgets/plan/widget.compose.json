@@ -1,0 +1,15 @@
+{
+  "name": {
+    "en": "Battery plan",
+    "nl": "Batterijplan"
+  },
+  "height": 230,
+  "transparent": false,
+  "settings": [],
+  "api": {
+    "getPlan": {
+      "method": "GET",
+      "path": "/"
+    }
+  }
+}
