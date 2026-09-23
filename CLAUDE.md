@@ -46,7 +46,8 @@ Persoonlijke context (installatie, accounts, voorkeuren) staat in `CLAUDE.local.
 3. Gebruikerszichtbaar? Handleiding bijwerken in `tools/make_manual.py` en `python tools/make_manual.py` draaien;
    README.md, README.txt, README.nl.txt bijwerken.
 4. Nieuwe versie: `.homeycompose/app.json` + `package.json` + `.homeychangelog.json` (en + nl) + versie in `make_manual.py` (`versie app x.y.z`).
-5. `homey app validate` herschrijft `app.json` (alleen regeleinden) → `git checkout -- app.json` als dat de enige wijziging is.
+5. `app.json` wordt door `homey app validate` gegenereerd uit `.homeycompose/` en `drivers/*/driver.compose.json`:
+   **altijd meecommitten** (niet terugdraaien). Nooit met de hand bewerken.
 6. Commit met `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`; git-identiteit in deze repo is DrPeppers.
 
 ## Valkuilen in deze omgeving (Windows)
