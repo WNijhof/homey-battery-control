@@ -1,6 +1,6 @@
 {
   "name": "com.drpeppers.batterycontrol",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Slimme lokale thuisbatterij-regeling voor Homey (Zendure, Marstek, Anker)",
   "main": "app.js",
   "private": true,
@@ -9,6 +9,6 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node test/modbus.test.js && node test/web.test.js && node test/device.test.js && node test/extra.test.js && node test/surplus.test.js && node test/planner.test.js"
+    "test": "node test/modbus.test.js && node test/web.test.js && node test/device.test.js && node test/extra.test.js && node test/surplus.test.js && node test/simulation.test.js && node test/planner.test.js"
   }
 }

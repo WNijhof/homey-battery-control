@@ -61,6 +61,13 @@
   .setting input[type=number], .setting input[type=text], .setting input[type=password] { width: 160px; max-width: 100%; }
   .setting.changed .name::after { content: " •"; color: var(--amber); }
   .readonly { font-size: 13px; color: var(--muted); }
+  .sim p { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-weight: 600; color: var(--muted); font-size: 12px; }
+  tr.total td { font-weight: 700; }
   .log { font: 12px/1.45 ui-monospace, Consolas, monospace; background: var(--bg); border-radius: 6px;
     padding: 10px; max-height: 340px; overflow: auto; white-space: pre-wrap; word-break: break-word; margin: 10px 0 0; }
   .log .error { color: var(--red); } .log .warn { color: var(--amber); } .log .data { color: var(--muted); }
@@ -71,6 +78,7 @@
   <div class="row">
     <h1 id="title">Batterij Regeling</h1>
     <span class="badge" id="demo" hidden>DEMO</span>
+    <span class="badge" id="simBadge" hidden>SIMULATIE</span>
     <span class="updated" id="updated">verbinden…</span>
   </div>
 </header>
@@ -78,6 +86,15 @@
   <div class="alert" id="alert" hidden></div>
   <div class="status" id="status"></div>
   <div class="tiles" id="tiles"></div>
+
+  <div class="card sim" id="simCard" hidden>
+    <h2>Simulatie: wat de batterij had gedaan</h2>
+    <p>Deze batterij bestaat alleen in de app. De regeling rekent met je echte P1-meting (zonnepanelen, boiler en de
+      rest van het huis) en houdt bij hoe het net er mét batterij uit had gezien. Opbrengst = stroomkosten zonder
+      batterij min stroomkosten met batterij, tegen de kwartierprijs van dat moment.</p>
+    <div class="tablewrap" id="simTable"></div>
+    <p id="simModel" style="margin-top:10px"></p>
+  </div>
 
   <div class="card">
     <h2>Plan komende 24 uur</h2>
@@ -207,6 +224,8 @@
       deviceId = d.id;
       $('title').textContent = d.name || 'Batterij Regeling';
       $('demo').hidden = !d.demo;
+      $('simBadge').hidden = !d.simulation;
+      renderSimulation(d.simulation);
       const alerts = [d.warning, d.available ? null : 'Batterij niet bereikbaar'].filter(Boolean);
       $('alert').hidden = !alerts.length;
       $('alert').textContent = alerts.join(' · ');
@@ -216,7 +235,9 @@
         tile('Laadniveau', `${nf(d.soc)} %`),
         tile('Batterij', `${nf(Math.abs(d.power ?? 0))} W`, direction(d.power)),
         tile(d.demo ? 'Zou sturen (demo)' : 'Gewenst', `${nf(Math.abs(v.setpoint ?? 0))} W`, direction(v.setpoint)),
-        tile('Net (P1)', `${nf(Math.abs(v.grid ?? 0))} W`, v.grid > 0 ? 'afname' : v.grid < 0 ? 'teruglevering' : ''),
+        tile(d.simulation ? 'Net met batterij' : 'Net (P1)', `${nf(Math.abs(v.grid ?? 0))} W`, v.grid > 0 ? 'afname' : v.grid < 0 ? 'teruglevering' : ''),
+        ...(d.simulation ? [tile('Net zonder batterij (P1)', `${nf(Math.abs(d.simulation.realGrid ?? 0))} W`,
+          d.simulation.realGrid > 0 ? 'afname' : d.simulation.realGrid < 0 ? 'teruglevering' : '')] : []),
         tile('Zonne-overschot', `${nf(v.surplus)} W`),
         tile('Stroomprijs nu', `€ ${nf(d.price, 3)}`, ACTION[v.plan] || ''),
         tile('Opbrengst vandaag', `€ ${nf(d.savingsToday, 2)}`, `totaal € ${nf(v.savingsTotal, 2)}`),
@@ -231,6 +252,33 @@
     } catch (err) {
       $('updated').textContent = `geen verbinding (${err.message})`;
     }
+  }
+
+  function renderSimulation(sim) {
+    $('simCard').hidden = !sim;
+    if (!sim) return;
+    const row = (label, p, cls = '') => `<tr class="${cls}"><td>${esc(label)}</td>`
+      + `<td>${nf(p.realImport, 2)} / ${nf(p.realExport, 2)}</td>`
+      + `<td>${nf(p.simImport, 2)} / ${nf(p.simExport, 2)}</td>`
+      + `<td>${nf(p.charged, 2)} <span style="opacity:.6">(${nf(p.solarCharged, 2)} zon)</span></td>`
+      + `<td>${nf(p.discharged, 2)}</td><td>${nf(p.cycles, 2)}</td>`
+      + `<td>${p.charged > 0.5 ? `${nf((p.discharged / p.charged) * 100)} %` : '–'}</td>`
+      + `<td>${p.solarUsed === null ? '–' : `${p.solarUsed} %`}</td>`
+      + `<td>€ ${nf(p.savings, 2)}</td><td>€ ${nf(p.savingsNoNet, 2)}</td></tr>`;
+    const head = '<tr><th>Periode</th><th>Net zonder batterij<br>afname / terug (kWh)</th><th>Net met batterij<br>afname / terug (kWh)</th>'
+      + '<th>Geladen (kWh)</th><th>Ontladen (kWh)</th><th>Cycli</th><th>Rendement</th><th>Zon benut</th>'
+      + '<th>Opbrengst<br>met saldering</th><th>Opbrengst<br>zonder saldering</th></tr>';
+    const total = sim.total.hours > 0 ? row(`Totaal sinds ${sim.total.since}`, sim.total, 'total') : '';
+    const days = sim.days.map((p) => row(p.date, p)).join('');
+    $('simTable').innerHTML = total || days
+      ? `<table>${head}${total}${days}</table>`
+      : '<p>Nog geen gegevens: de vergelijking begint zodra de P1-meter metingen geeft.</p>';
+    const m = sim.model || {};
+    $('simModel').textContent = `Model: ${nf(m.capacityKwh, 1)} kWh, laden ${nf(m.maxChargeW)} W, ontladen ${nf(m.maxDischargeW)} W, `
+      + `rendement ${nf((m.rte || 0) * 100)} % bij 800 W, vast verlies ${nf(m.overheadW)} W per richting, stand-by `
+      + `${nf(m.standbyW, 1)} W (net) + ${nf(m.idleDrainW, 1)} W (accu), reactietijd ${nf(m.delayS)} s. `
+      + `Laadniveau ${nf(sim.socExact, 1)} %. "Rendement" = ontladen / geladen (zonder verschil in laadniveau); `
+      + '"Zon benut" = deel van de teruglevering dat de batterij in huis hield.';
   }
 
   function renderSettings(data) {

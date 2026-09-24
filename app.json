@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.drpeppers.batterycontrol",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
@@ -81,7 +81,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           }
         ],
         "id": "demo_changed"
@@ -115,7 +115,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           }
         ],
         "id": "plan_changed"
@@ -140,7 +140,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           }
         ],
         "id": "strategy_changed"
@@ -173,7 +173,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -223,7 +223,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -264,7 +264,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           }
         ],
         "id": "demo_is_on"
@@ -282,7 +282,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "dropdown",
@@ -327,7 +327,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -352,7 +352,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -377,7 +377,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "dropdown",
@@ -457,7 +457,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -491,7 +491,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -523,7 +523,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -589,7 +589,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "number",
@@ -617,7 +617,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=zendure|marstek|anker"
+            "filter": "driver_id=zendure|marstek|anker|simulator"
           },
           {
             "type": "dropdown",
@@ -2737,6 +2737,1077 @@
         }
       ],
       "id": "marstek"
+    },
+    {
+      "name": {
+        "en": "Simulated battery (SolarFlow 2400 AC+)",
+        "nl": "Gesimuleerde batterij (SolarFlow 2400 AC+)"
+      },
+      "class": "other",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "capabilities": [
+        "battery_strategy",
+        "battery_status",
+        "measure_battery",
+        "measure_power.battery",
+        "measure_power.setpoint",
+        "measure_power.grid",
+        "measure_power.surplus",
+        "energy_price",
+        "battery_plan",
+        "meter_power.charged",
+        "meter_power.discharged",
+        "battery_savings_today",
+        "battery_savings_total",
+        "battery_efficiency",
+        "solar_forecast_today"
+      ],
+      "capabilitiesOptions": {
+        "measure_power.grid": {
+          "title": {
+            "en": "Grid with battery",
+            "nl": "Net met batterij"
+          }
+        },
+        "meter_power.charged": {
+          "title": {
+            "en": "Charged",
+            "nl": "Geladen"
+          }
+        },
+        "meter_power.discharged": {
+          "title": {
+            "en": "Discharged",
+            "nl": "Ontladen"
+          }
+        },
+        "measure_power.surplus": {
+          "title": {
+            "en": "Solar surplus",
+            "nl": "Zonne-overschot"
+          }
+        },
+        "measure_power.setpoint": {
+          "title": {
+            "en": "Desired battery power",
+            "nl": "Gewenst batterijvermogen"
+          }
+        },
+        "measure_power.battery": {
+          "title": {
+            "en": "Battery power (simulated)",
+            "nl": "Batterijvermogen (gesimuleerd)"
+          }
+        }
+      },
+      "energy": {
+        "batteries": [
+          "INTERNAL"
+        ]
+      },
+      "images": {
+        "small": "/drivers/simulator/assets/images/small.png",
+        "large": "/drivers/simulator/assets/images/large.png",
+        "xlarge": "/drivers/simulator/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "configure"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Connection",
+            "nl": "Verbinding"
+          },
+          "children": [
+            {
+              "id": "p1_ip",
+              "type": "text",
+              "label": {
+                "en": "HomeWizard P1 IP address",
+                "nl": "HomeWizard P1 IP-adres"
+              },
+              "value": "",
+              "hint": {
+                "en": "IP address of the HomeWizard P1 meter. Give it a fixed address in your router.",
+                "nl": "IP-adres van de HomeWizard P1-meter. Geef hem een vast adres in je router."
+              }
+            },
+            {
+              "id": "p1_token",
+              "type": "password",
+              "label": {
+                "en": "HomeWizard API v2 token (optional)",
+                "nl": "HomeWizard API v2-token (optioneel)"
+              },
+              "hint": {
+                "en": "Leave empty to use local API v1. Obtain a token via Repair on this device (press the button on the P1 meter).",
+                "nl": "Leeg = lokale API v1. Een token haal je op via Repareren bij dit apparaat (knop op de P1-meter indrukken)."
+              },
+              "value": ""
+            },
+            {
+              "id": "interval",
+              "type": "number",
+              "label": {
+                "en": "Control interval",
+                "nl": "Regelinterval"
+              },
+              "value": 5,
+              "min": 2,
+              "max": 60,
+              "units": {
+                "en": "s"
+              },
+              "hint": {
+                "en": "How often the app reads the meter and adjusts the battery. 5 s works well; shorter reacts faster but causes more network traffic.",
+                "nl": "Hoe vaak de app de meter uitleest en de batterij bijstuurt. 5 s werkt goed; korter reageert sneller maar geeft meer netwerkverkeer."
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Simulation",
+            "nl": "Simulatie"
+          },
+          "children": [
+            {
+              "id": "sim_start_soc",
+              "type": "number",
+              "label": {
+                "en": "Start level (%)",
+                "nl": "Startniveau (%)"
+              },
+              "hint": {
+                "en": "Changing this value resets the simulated battery to this level.",
+                "nl": "Als je deze waarde wijzigt, begint de gesimuleerde batterij opnieuw op dit niveau."
+              },
+              "value": 50,
+              "min": 0,
+              "max": 100
+            },
+            {
+              "id": "sim_rte",
+              "type": "number",
+              "label": {
+                "en": "Round-trip efficiency at 800 W (%)",
+                "nl": "Rendement heen en terug bij 800 W (%)"
+              },
+              "hint": {
+                "en": "AC to AC. Reviews measured 87–88 % for the SolarFlow 2400 AC+ (Zendure claims up to 93 %).",
+                "nl": "Van stopcontact naar stopcontact. Reviews maten 87–88 % bij de SolarFlow 2400 AC+ (Zendure noemt tot 93 %)."
+              },
+              "value": 88,
+              "min": 60,
+              "max": 98
+            },
+            {
+              "id": "sim_overhead_w",
+              "type": "number",
+              "label": {
+                "en": "Fixed conversion loss (W)",
+                "nl": "Vast omzettingsverlies (W)"
+              },
+              "hint": {
+                "en": "Loss per direction while charging or discharging, regardless of the power. Makes low powers less efficient: with 8 W the round trip is about 81 % at 150 W (reviews: 78–82 % at 100–200 W).",
+                "nl": "Verlies per richting tijdens laden of ontladen, los van het vermogen. Maakt kleine vermogens minder zuinig: met 8 W is het rendement ongeveer 81 % bij 150 W (reviews: 78–82 % bij 100–200 W)."
+              },
+              "value": 8,
+              "min": 0,
+              "max": 50
+            },
+            {
+              "id": "sim_standby_w",
+              "type": "number",
+              "label": {
+                "en": "Standby from the grid (W)",
+                "nl": "Stand-by uit het net (W)"
+              },
+              "hint": {
+                "en": "Power the idle battery draws from the socket (measured: 0.7 W).",
+                "nl": "Vermogen dat de batterij in rust uit het stopcontact haalt (gemeten: 0,7 W)."
+              },
+              "value": 0.7,
+              "min": 0,
+              "max": 20,
+              "step": 0.1
+            },
+            {
+              "id": "sim_idle_drain_w",
+              "type": "number",
+              "label": {
+                "en": "Standby from the battery (W)",
+                "nl": "Stand-by uit de accu (W)"
+              },
+              "hint": {
+                "en": "Power the idle battery takes from its own cells (measured: about 2.7 W, roughly 65 Wh per day).",
+                "nl": "Vermogen dat de batterij in rust uit de eigen accu haalt (gemeten: circa 2,7 W, ongeveer 65 Wh per dag)."
+              },
+              "value": 2.7,
+              "min": 0,
+              "max": 20,
+              "step": 0.1
+            },
+            {
+              "id": "sim_delay_s",
+              "type": "number",
+              "label": {
+                "en": "Response delay (s)",
+                "nl": "Reactietijd (s)"
+              },
+              "hint": {
+                "en": "Time before a new set-point takes effect (reviews: within a few seconds).",
+                "nl": "Tijd voordat een nieuw vermogen ingaat (reviews: binnen een paar seconden)."
+              },
+              "value": 3,
+              "min": 0,
+              "max": 30
+            },
+            {
+              "id": "sim_ramp_wps",
+              "type": "number",
+              "label": {
+                "en": "Ramp rate (W per second)",
+                "nl": "Opregelsnelheid (W per seconde)"
+              },
+              "hint": {
+                "en": "How fast the power changes after the response delay.",
+                "nl": "Hoe snel het vermogen daarna verandert."
+              },
+              "value": 200,
+              "min": 10,
+              "max": 5000
+            },
+            {
+              "id": "sim_export_fee",
+              "type": "number",
+              "label": {
+                "en": "Feed-in fee without net metering (€/kWh)",
+                "nl": "Terugleverkosten zonder saldering (€/kWh)"
+              },
+              "hint": {
+                "en": "For the comparison without net metering (from 2027): export earns the market price incl. VAT minus this amount.",
+                "nl": "Voor de vergelijking zonder saldering (vanaf 2027): teruglevering levert de marktprijs incl. btw op, min dit bedrag."
+              },
+              "value": 0,
+              "min": -0.5,
+              "max": 0.5,
+              "step": 0.01
+            },
+            {
+              "id": "sim_reset_stats",
+              "type": "checkbox",
+              "label": {
+                "en": "Clear simulation statistics",
+                "nl": "Simulatie-statistieken wissen"
+              },
+              "hint": {
+                "en": "Tick and save to start the comparison again.",
+                "nl": "Aanvinken en opslaan om de vergelijking opnieuw te beginnen."
+              },
+              "value": false
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Battery",
+            "nl": "Batterij"
+          },
+          "children": [
+            {
+              "id": "capacity_kwh",
+              "type": "number",
+              "label": {
+                "en": "Capacity",
+                "nl": "Capaciteit"
+              },
+              "hint": {
+                "en": "SolarFlow 2400 AC+: 2.4 kWh built in + 2.88 kWh per AB3000L.",
+                "nl": "SolarFlow 2400 AC+: 2,4 kWh ingebouwd + 2,88 kWh per AB3000L."
+              },
+              "value": 2.4,
+              "min": 0.5,
+              "max": 50,
+              "step": 0.01,
+              "units": {
+                "en": "kWh"
+              }
+            },
+            {
+              "id": "max_charge_w",
+              "type": "number",
+              "label": {
+                "en": "Max charge power",
+                "nl": "Max laadvermogen"
+              },
+              "value": 800,
+              "min": 100,
+              "max": 3200,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "800 W on a normal wall socket; higher only on a dedicated circuit installed by an electrician",
+                "nl": "800 W via een gewoon stopcontact; hoger alleen op een eigen groep, aangelegd door een installateur"
+              }
+            },
+            {
+              "id": "max_discharge_w",
+              "type": "number",
+              "label": {
+                "en": "Max discharge power",
+                "nl": "Max ontlaadvermogen"
+              },
+              "value": 800,
+              "min": 100,
+              "max": 2400,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "800 W on a normal wall socket; higher only on a dedicated circuit installed by an electrician",
+                "nl": "800 W via een gewoon stopcontact; hoger alleen op een eigen groep, aangelegd door een installateur"
+              }
+            },
+            {
+              "id": "min_soc",
+              "type": "number",
+              "label": {
+                "en": "Minimum charge level",
+                "nl": "Minimaal laadniveau"
+              },
+              "value": 10,
+              "min": 0,
+              "max": 50,
+              "units": {
+                "en": "%"
+              },
+              "hint": {
+                "en": "The battery never discharges below this level. Keep it at or above the limit set in the Zendure app.",
+                "nl": "Onder dit laadniveau ontlaadt de batterij nooit. Houd dit gelijk aan of hoger dan de grens in de Zendure-app."
+              }
+            },
+            {
+              "id": "max_soc",
+              "type": "number",
+              "label": {
+                "en": "Maximum charge level",
+                "nl": "Maximaal laadniveau"
+              },
+              "value": 100,
+              "min": 50,
+              "max": 100,
+              "units": {
+                "en": "%"
+              },
+              "hint": {
+                "en": "The battery never charges above this level. 90–95 % can extend battery life slightly.",
+                "nl": "Boven dit laadniveau laadt de batterij nooit. 90–95 % kan de levensduur iets verlengen."
+              }
+            },
+            {
+              "id": "efficiency",
+              "type": "number",
+              "label": {
+                "en": "Round-trip efficiency",
+                "nl": "Rendement (heen en terug)"
+              },
+              "value": 85,
+              "min": 50,
+              "max": 100,
+              "units": {
+                "en": "%"
+              },
+              "hint": {
+                "en": "Share of the charged energy you get back when discharging (charging + discharging losses). Used by the price plan. Start value; the learned efficiency can replace it.",
+                "nl": "Deel van de geladen energie dat je bij ontladen terugkrijgt (verlies bij laden + ontladen). Gebruikt door het prijsplan. Startwaarde; het geleerde rendement kan deze vervangen."
+              }
+            },
+            {
+              "id": "auto_efficiency",
+              "type": "checkbox",
+              "label": {
+                "en": "Use learned efficiency",
+                "nl": "Geleerd rendement gebruiken"
+              },
+              "hint": {
+                "en": "After enough data (5 kWh charged) the measured efficiency replaces the value above.",
+                "nl": "Zodra er genoeg gegevens zijn (5 kWh geladen) vervangt het gemeten rendement de waarde hierboven."
+              },
+              "value": true
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Control",
+            "nl": "Regeling"
+          },
+          "children": [
+            {
+              "id": "grid_target",
+              "type": "number",
+              "label": {
+                "en": "Grid target",
+                "nl": "Net-doelwaarde"
+              },
+              "hint": {
+                "en": "Desired P1 power in self-consumption. A small positive value (e.g. 20 W) avoids exporting.",
+                "nl": "Gewenst P1-vermogen bij zelfconsumptie. Een kleine positieve waarde (bijv. 20 W) voorkomt terugleveren."
+              },
+              "value": 20,
+              "min": -500,
+              "max": 500,
+              "units": {
+                "en": "W"
+              }
+            },
+            {
+              "id": "gain",
+              "type": "number",
+              "label": {
+                "en": "Control gain",
+                "nl": "Regelversterking"
+              },
+              "hint": {
+                "en": "0.5–1.0. Lower = calmer, higher = faster.",
+                "nl": "0,5–1,0. Lager = rustiger, hoger = sneller."
+              },
+              "value": 0.7,
+              "min": 0.1,
+              "max": 1.5,
+              "step": 0.05
+            },
+            {
+              "id": "deadband",
+              "type": "number",
+              "label": {
+                "en": "Deadband",
+                "nl": "Dode zone"
+              },
+              "value": 25,
+              "min": 0,
+              "max": 200,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "A new command is only sent when the power changes by at least this much. Prevents unnecessary commands.",
+                "nl": "Een nieuwe opdracht wordt pas gestuurd als het vermogen minstens zoveel verandert. Voorkomt onnodige opdrachten."
+              }
+            },
+            {
+              "id": "min_power",
+              "type": "number",
+              "label": {
+                "en": "Minimum power",
+                "nl": "Minimaal vermogen"
+              },
+              "value": 30,
+              "min": 0,
+              "max": 200,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "Set-points smaller than this become 0 (idle). Very small powers are inefficient for the inverter.",
+                "nl": "Kleinere vermogens worden 0 (stand-by). Heel kleine vermogens zijn inefficiënt voor de omvormer."
+              }
+            },
+            {
+              "id": "force_charge_w",
+              "type": "number",
+              "label": {
+                "en": "Force charge power",
+                "nl": "Vermogen geforceerd laden"
+              },
+              "value": 800,
+              "min": 50,
+              "max": 3200,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "Charging power for the strategy Force charge and the Flow card \"Charge with power\".",
+                "nl": "Laadvermogen bij de strategie Geforceerd laden en de Flow-kaart \"Laden met vermogen\"."
+              }
+            },
+            {
+              "id": "force_discharge_w",
+              "type": "number",
+              "label": {
+                "en": "Force discharge power",
+                "nl": "Vermogen geforceerd ontladen"
+              },
+              "value": 800,
+              "min": 50,
+              "max": 2400,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "Discharging power for the strategy Force discharge and the Flow card \"Discharge with power\".",
+                "nl": "Ontlaadvermogen bij de strategie Geforceerd ontladen en de Flow-kaart \"Ontladen met vermogen\"."
+              }
+            },
+            {
+              "id": "peak_threshold",
+              "type": "number",
+              "label": {
+                "en": "Import limit for strategy Standby / peak shaving",
+                "nl": "Importgrens bij strategie Stand-by / piekbegrenzing"
+              },
+              "value": 2500,
+              "min": 0,
+              "max": 20000,
+              "units": {
+                "en": "W"
+              },
+              "hint": {
+                "en": "With strategy Standby / peak shaving the battery stays idle and only discharges when grid import exceeds this value.",
+                "nl": "Bij de strategie Stand-by / piekbegrenzing doet de batterij niets en ontlaadt hij alleen als de afname van het net boven deze waarde komt."
+              }
+            },
+            {
+              "id": "charge_goal_soc",
+              "type": "number",
+              "label": {
+                "en": "Force charge until",
+                "nl": "Geforceerd laden tot"
+              },
+              "hint": {
+                "en": "When this level is reached, the follow-up strategy starts.",
+                "nl": "Bij dit laadniveau schakelt de app over op de vervolgstrategie."
+              },
+              "value": 100,
+              "min": 10,
+              "max": 100,
+              "units": {
+                "en": "%"
+              }
+            },
+            {
+              "id": "discharge_goal_soc",
+              "type": "number",
+              "label": {
+                "en": "Force discharge until",
+                "nl": "Geforceerd ontladen tot"
+              },
+              "hint": {
+                "en": "When this level is reached, the follow-up strategy starts.",
+                "nl": "Bij dit laadniveau schakelt de app over op de vervolgstrategie."
+              },
+              "value": 20,
+              "min": 0,
+              "max": 100,
+              "units": {
+                "en": "%"
+              }
+            },
+            {
+              "id": "follow_up_strategy",
+              "type": "dropdown",
+              "label": {
+                "en": "Follow-up strategy",
+                "nl": "Vervolgstrategie"
+              },
+              "hint": {
+                "en": "After force charging/discharging reached its goal.",
+                "nl": "Na het bereiken van het doel bij geforceerd laden/ontladen."
+              },
+              "value": "self_consumption",
+              "values": [
+                {
+                  "id": "self_consumption",
+                  "label": {
+                    "en": "Self-consumption",
+                    "nl": "Zelfconsumptie"
+                  }
+                },
+                {
+                  "id": "solar_only",
+                  "label": {
+                    "en": "Charge from solar only",
+                    "nl": "Alleen laden met zon"
+                  }
+                },
+                {
+                  "id": "zero_import",
+                  "label": {
+                    "en": "Zero import (discharge only)",
+                    "nl": "Nul import (alleen ontladen)"
+                  }
+                },
+                {
+                  "id": "dynamic",
+                  "label": {
+                    "en": "Dynamic prices",
+                    "nl": "Dynamische prijzen"
+                  }
+                },
+                {
+                  "id": "off",
+                  "label": {
+                    "en": "Idle",
+                    "nl": "Stand-by"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "grid_import_limit",
+              "type": "number",
+              "label": {
+                "en": "Grid import limit (all strategies)",
+                "nl": "Importgrens net (alle strategieën)"
+              },
+              "hint": {
+                "en": "Peak shaving on top of every strategy: above this import the battery discharges extra. 0 = off.",
+                "nl": "Piekbegrenzing bovenop elke strategie: boven deze afname ontlaadt de batterij extra. 0 = uit."
+              },
+              "value": 0,
+              "min": 0,
+              "max": 30000,
+              "units": {
+                "en": "W"
+              }
+            },
+            {
+              "id": "grid_export_limit",
+              "type": "number",
+              "label": {
+                "en": "Grid export limit (all strategies)",
+                "nl": "Exportgrens net (alle strategieën)"
+              },
+              "hint": {
+                "en": "Above this export the battery charges extra (e.g. against feed-in costs). 0 = off.",
+                "nl": "Boven deze teruglevering laadt de batterij extra (bijv. tegen terugleverkosten). 0 = uit."
+              },
+              "value": 0,
+              "min": 0,
+              "max": 30000,
+              "units": {
+                "en": "W"
+              }
+            },
+            {
+              "id": "switch_hysteresis",
+              "type": "number",
+              "label": {
+                "en": "Direction hysteresis",
+                "nl": "Hysterese laden/ontladen"
+              },
+              "hint": {
+                "en": "Only reverse between charging and discharging for at least this power. Reduces relay wear. 0 = off, e.g. 100–200 W.",
+                "nl": "Pas omschakelen tussen laden en ontladen bij minstens dit vermogen. Minder relaisslijtage. 0 = uit, bijv. 100–200 W."
+              },
+              "value": 0,
+              "min": 0,
+              "max": 1000,
+              "units": {
+                "en": "W"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Dynamic prices",
+            "nl": "Dynamische prijzen"
+          },
+          "children": [
+            {
+              "id": "markup",
+              "type": "number",
+              "label": {
+                "en": "Supplier markup incl. VAT",
+                "nl": "Opslag leverancier incl. btw"
+              },
+              "hint": {
+                "en": "Added to the EPEX market price. Only the price differences drive the decisions.",
+                "nl": "Wordt opgeteld bij de EPEX-marktprijs (Zonneplan inkoopvergoeding). Voor de beslissingen tellen vooral de prijsverschillen."
+              },
+              "value": 0.02,
+              "min": -1,
+              "max": 1,
+              "step": 0.001,
+              "units": {
+                "en": "€/kWh"
+              }
+            },
+            {
+              "id": "tax_per_kwh",
+              "type": "number",
+              "label": {
+                "en": "Energy tax incl. VAT",
+                "nl": "Energiebelasting incl. btw"
+              },
+              "hint": {
+                "en": "Added to every price, so losses during charging/discharging are valued correctly.",
+                "nl": "Wordt bij elke prijs opgeteld, zodat verliezen bij laden/ontladen correct meewegen. Zie je energierekening."
+              },
+              "value": 0.11,
+              "min": 0,
+              "max": 1,
+              "step": 0.001,
+              "units": {
+                "en": "€/kWh"
+              }
+            },
+            {
+              "id": "min_spread",
+              "type": "number",
+              "label": {
+                "en": "Minimum profit per kWh",
+                "nl": "Minimale winst per kWh"
+              },
+              "hint": {
+                "en": "Only trade when the price difference (after losses) is at least this much.",
+                "nl": "Alleen laden/ontladen als het prijsverschil (na verliezen) minstens dit bedrag is."
+              },
+              "value": 0.05,
+              "min": 0,
+              "max": 1,
+              "step": 0.005,
+              "units": {
+                "en": "€/kWh"
+              }
+            },
+            {
+              "id": "avg_load_w",
+              "type": "number",
+              "label": {
+                "en": "Average evening consumption",
+                "nl": "Gemiddeld avondverbruik"
+              },
+              "hint": {
+                "en": "Used to save the battery for the most expensive quarter hours. 0 = discharge whenever it pays off.",
+                "nl": "Hiermee bewaart de planner de batterij voor de duurste kwartieren. 0 = ontladen zodra het loont."
+              },
+              "value": 500,
+              "min": 0,
+              "max": 5000,
+              "units": {
+                "en": "W"
+              }
+            },
+            {
+              "id": "dyn_low",
+              "type": "dropdown",
+              "label": {
+                "en": "Cheap periods",
+                "nl": "Goedkope periodes"
+              },
+              "value": "charge",
+              "values": [
+                {
+                  "id": "charge",
+                  "label": {
+                    "en": "Charge from grid",
+                    "nl": "Laden uit het net"
+                  }
+                },
+                {
+                  "id": "solar_only",
+                  "label": {
+                    "en": "Charge from solar only",
+                    "nl": "Alleen laden met zon"
+                  }
+                },
+                {
+                  "id": "self_consumption",
+                  "label": {
+                    "en": "Self-consumption",
+                    "nl": "Zelfconsumptie"
+                  }
+                },
+                {
+                  "id": "off",
+                  "label": {
+                    "en": "Idle",
+                    "nl": "Stand-by"
+                  }
+                }
+              ],
+              "hint": {
+                "en": "What the battery does in the cheap periods of the price plan. Default: charge from the grid.",
+                "nl": "Wat de batterij doet in de goedkope periodes van het prijsplan. Standaard: laden uit het net."
+              }
+            },
+            {
+              "id": "dyn_neutral",
+              "type": "dropdown",
+              "label": {
+                "en": "Neutral periods",
+                "nl": "Neutrale periodes"
+              },
+              "hint": {
+                "en": "Charge from solar only keeps energy for the expensive periods.",
+                "nl": "Alleen laden met zon bewaart de energie voor de dure periodes."
+              },
+              "value": "solar_only",
+              "values": [
+                {
+                  "id": "solar_only",
+                  "label": {
+                    "en": "Charge from solar only",
+                    "nl": "Alleen laden met zon"
+                  }
+                },
+                {
+                  "id": "self_consumption",
+                  "label": {
+                    "en": "Self-consumption",
+                    "nl": "Zelfconsumptie"
+                  }
+                },
+                {
+                  "id": "zero_import",
+                  "label": {
+                    "en": "Zero import (discharge only)",
+                    "nl": "Nul import (alleen ontladen)"
+                  }
+                },
+                {
+                  "id": "off",
+                  "label": {
+                    "en": "Idle",
+                    "nl": "Stand-by"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "dyn_high",
+              "type": "dropdown",
+              "label": {
+                "en": "Expensive periods",
+                "nl": "Dure periodes"
+              },
+              "hint": {
+                "en": "Sell = discharge at full power, also to the grid.",
+                "nl": "Verkopen = vol vermogen ontladen, ook naar het net."
+              },
+              "value": "self_consumption",
+              "values": [
+                {
+                  "id": "self_consumption",
+                  "label": {
+                    "en": "Self-consumption",
+                    "nl": "Zelfconsumptie"
+                  }
+                },
+                {
+                  "id": "zero_import",
+                  "label": {
+                    "en": "Zero import (discharge only)",
+                    "nl": "Nul import (alleen ontladen)"
+                  }
+                },
+                {
+                  "id": "sell",
+                  "label": {
+                    "en": "Sell (discharge at full power)",
+                    "nl": "Verkopen (vol vermogen ontladen)"
+                  }
+                },
+                {
+                  "id": "solar_only",
+                  "label": {
+                    "en": "Charge from solar only",
+                    "nl": "Alleen laden met zon"
+                  }
+                },
+                {
+                  "id": "off",
+                  "label": {
+                    "en": "Idle",
+                    "nl": "Stand-by"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "entsoe_token",
+              "type": "password",
+              "label": {
+                "en": "ENTSO-E token (backup, optional)",
+                "nl": "ENTSO-E-token (reserve, optioneel)"
+              },
+              "hint": {
+                "en": "Free token from transparency.entsoe.eu. Used only when EnergyZero is unavailable.",
+                "nl": "Gratis token van transparency.entsoe.eu. Wordt alleen gebruikt als EnergyZero niet bereikbaar is."
+              },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Solar forecast",
+            "nl": "Zonverwachting"
+          },
+          "children": [
+            {
+              "id": "forecast_enabled",
+              "type": "checkbox",
+              "label": {
+                "en": "Use solar forecast",
+                "nl": "Zonverwachting gebruiken"
+              },
+              "hint": {
+                "en": "Skip grid charging when enough sun is expected (forecast.solar, uses the location of your Homey).",
+                "nl": "Niet uit het net laden als er genoeg zon verwacht wordt (forecast.solar, gebruikt de locatie van je Homey)."
+              },
+              "value": false
+            },
+            {
+              "id": "pv_kwp",
+              "type": "number",
+              "label": {
+                "en": "Solar panel peak power",
+                "nl": "Piekvermogen zonnepanelen"
+              },
+              "hint": {
+                "en": "Total of all panels, e.g. 12 × 400 Wp = 4.8 kWp",
+                "nl": "Totaal van alle panelen, bijv. 12 × 400 Wp = 4,8 kWp"
+              },
+              "value": 0,
+              "min": 0,
+              "max": 50,
+              "step": 0.1,
+              "units": {
+                "en": "kWp"
+              }
+            },
+            {
+              "id": "pv_tilt",
+              "type": "number",
+              "label": {
+                "en": "Panel tilt",
+                "nl": "Hellingshoek panelen"
+              },
+              "hint": {
+                "en": "0 = flat, 90 = vertical",
+                "nl": "0 = plat, 90 = verticaal"
+              },
+              "value": 35,
+              "min": 0,
+              "max": 90,
+              "units": {
+                "en": "°"
+              }
+            },
+            {
+              "id": "pv_azimuth",
+              "type": "number",
+              "label": {
+                "en": "Panel direction",
+                "nl": "Richting panelen"
+              },
+              "hint": {
+                "en": "0 = south, -90 = east, 90 = west",
+                "nl": "0 = zuid, -90 = oost, 90 = west, 180 = noord"
+              },
+              "value": 0,
+              "min": -180,
+              "max": 180,
+              "units": {
+                "en": "°"
+              }
+            },
+            {
+              "id": "day_load_w",
+              "type": "number",
+              "label": {
+                "en": "Average daytime consumption",
+                "nl": "Gemiddeld verbruik overdag"
+              },
+              "hint": {
+                "en": "Subtracted from the forecast; the rest is expected to go into the battery.",
+                "nl": "Wordt van de zonverwachting afgetrokken; de rest gaat naar verwachting de batterij in."
+              },
+              "value": 400,
+              "min": 0,
+              "max": 5000,
+              "units": {
+                "en": "W"
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Web page",
+            "nl": "Webpagina"
+          },
+          "children": [
+            {
+              "id": "web_enabled",
+              "type": "checkbox",
+              "label": {
+                "en": "Web page on the local network",
+                "nl": "Webpagina in het thuisnetwerk"
+              },
+              "hint": {
+                "en": "Open http://<ip of your Homey>:<port> on any device in your home network.",
+                "nl": "Open http://<IP-adres van je Homey>:<poort> op een apparaat in je thuisnetwerk."
+              },
+              "value": true
+            },
+            {
+              "id": "web_port",
+              "type": "number",
+              "label": {
+                "en": "Port",
+                "nl": "Poort"
+              },
+              "value": 8480,
+              "min": 1024,
+              "max": 65535,
+              "hint": {
+                "en": "Port of the web page: http://<Homey IP>:<port>. Only change it when the port is already in use. Never open it in your router.",
+                "nl": "Poort van de webpagina: http://<IP van Homey>:<poort>. Alleen wijzigen als de poort al in gebruik is. Nooit openzetten in je router."
+              }
+            },
+            {
+              "id": "web_pin",
+              "type": "password",
+              "label": {
+                "en": "PIN for changing settings",
+                "nl": "Pincode voor wijzigen"
+              },
+              "hint": {
+                "en": "4 to 8 digits. Without a PIN the web page is read only.",
+                "nl": "4 tot 8 cijfers. Zonder pincode is de webpagina alleen-lezen."
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "repair": [
+        {
+          "id": "hw_token"
+        }
+      ],
+      "id": "simulator"
     },
     {
       "name": {

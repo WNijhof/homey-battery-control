@@ -1,12 +1,35 @@
 'use strict';
 
 // Preview of the web page with live prices and sample values: node tools/preview-web.js  → http://localhost:8480
+// With --sim: the simulated battery (sample comparison with and without battery).
 const fs = require('fs');
 const path = require('path');
 const { WebServer } = require('../lib/webserver');
 const PriceService = require('../lib/prices');
 const { makePlan } = require('../lib/planner');
 const manifest = require('../app.json');
+const { SimulationStats } = require('../lib/simstats');
+
+const SIM = process.argv.includes('--sim');
+
+function sampleSimulation() {
+  const day = (date, f) => SimulationStats.summary({
+    date, hours: 24, pricedHours: 24, realImport: 6.1 * f, realExport: 14.2 * f, simImport: 4.3 * f, simExport: 12.1 * f,
+    charged: 2.3 * f, discharged: 1.95 * f, solarCharged: 2.2 * f, gridCharged: 0.1 * f, dischargeHome: 1.95 * f,
+    dischargeExport: 0, costReal: 0.21 * f, costSim: 0.16 * f, costRealNoNet: 1.35 * f, costSimNoNet: 0.98 * f,
+  }, 2.4);
+  const days = [day('24-09-2026', 0.5), day('23-09-2026', 1), day('22-09-2026', 0.9)];
+  const total = { ...day('22-09-2026', 2.4), since: '22-09-2026' };
+  return {
+    model: {
+      capacityKwh: 2.4, maxChargeW: 800, maxDischargeW: 800, rte: 0.88, overheadW: 8, standbyW: 0.7, idleDrainW: 2.7, delayS: 3,
+    },
+    realGrid: -1240,
+    socExact: 62.4,
+    total,
+    days,
+  };
+}
 
 (async () => {
   const prices = new PriceService();
@@ -15,7 +38,7 @@ const manifest = require('../app.json');
     capacityKwh: 2.4, minSoc: 10, maxSoc: 100, maxChargeW: 800, maxDischargeW: 800, efficiency: 0.85,
     minSpread: 0.05, markup: 0.13, avgLoadW: 500, soc: 62,
   });
-  const driver = manifest.drivers.find((d) => d.id === 'zendure');
+  const driver = manifest.drivers.find((d) => d.id === (SIM ? 'simulator' : 'zendure'));
   const settings = {};
   const schema = [];
   for (const g of driver.settings) {
@@ -38,7 +61,8 @@ const manifest = require('../app.json');
     getWebData: () => ({
       id: 'HOA1234', name: 'Zendure solarFlow2400AC+', soc: 62, power: -340, strategy: 'dynamic',
       status: 'Demo – zou: ontladen 340 W · dynamic:discharge', price: plan.slots[0]?.price, savingsToday: 0.41,
-      demo: true, available: true, warning: null, threshold: plan.dischargeThreshold,
+      demo: !SIM, available: true, warning: null, threshold: plan.dischargeThreshold,
+      simulation: SIM ? sampleSimulation() : null,
       slots: plan.slots.slice(0, 96),
       values: {
         grid: 12, setpoint: -340, surplus: 0, plan: plan.slots[0]?.action, charged: 12.4, discharged: 10.6,

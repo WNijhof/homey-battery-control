@@ -9,7 +9,7 @@ const { Logbook, maskSettings } = require('./lib/logbook');
 
 const PRICE_REFRESH_MS = 30 * 60 * 1000;
 const LOG_PERSIST_MS = 5 * 60 * 1000;
-const BATTERY_DRIVERS = ['zendure', 'marstek', 'anker'];
+const BATTERY_DRIVERS = ['zendure', 'marstek', 'anker', 'simulator'];
 
 class BatteryControlApp extends Homey.App {
 
@@ -81,6 +81,12 @@ class BatteryControlApp extends Homey.App {
       const plan = device.plan.slots.slice(0, 96).map((s) => `${this.logbook.formatTime(s.start).slice(-8, -3)} `
         + `${s.action[0]} ${s.price.toFixed(3)}`);
       lines.push(`Plan (tijd, c=laden d=ontladen h=vasthouden, prijs): ${plan.join(' | ')}`);
+      const sim = device.simulationData ? device.simulationData() : null;
+      if (sim) {
+        lines.push(`Simulatie: soc ${sim.socExact} % · model ${JSON.stringify(sim.model)}`);
+        lines.push(`Simulatie totaal: ${JSON.stringify(sim.total)}`);
+        for (const d of sim.days) lines.push(`Simulatie ${d.date}: ${JSON.stringify(d)}`);
+      }
     }
     lines.push('');
     lines.push('=== Logboek (oudste eerst) ===');

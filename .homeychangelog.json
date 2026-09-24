@@ -18,5 +18,9 @@
   "0.5.0": {
     "en": "Support for more home batteries: all Zendure SolarFlow models with the local API (800, 800 Plus, 800 Pro, 1600 AC+, 2400 AC/AC+/Pro), Marstek Venus E/A/D (Modbus TCP) and Anker SOLIX Solarbank Max (AC), XE and Solarbank 4 (official local Modbus TCP). Switching demo mode on hands the battery back to its own program. Experimental for Marstek and Anker: check the data in demo mode first. New: logbook with events and a data line per minute (kept across restarts), downloadable as one diagnostics file via the web page.",
     "nl": "Ondersteuning voor meer thuisbatterijen: alle Zendure SolarFlow-modellen met de lokale API (800, 800 Plus, 800 Pro, 1600 AC+, 2400 AC/AC+/Pro), Marstek Venus E/A/D (Modbus TCP) en Anker SOLIX Solarbank Max (AC), XE en Solarbank 4 (officiële lokale Modbus TCP). Demo-modus aanzetten geeft de batterij terug aan zijn eigen programma. Experimenteel voor Marstek en Anker: controleer eerst de gegevens in demo-modus. Nieuw: logboek met gebeurtenissen en elke minuut een meetregel (blijft bewaard na herstart), als één diagnosebestand te downloaden via de webpagina."
+  },
+  "0.6.0": {
+    "en": "New: simulated battery with the measured behaviour of a Zendure SolarFlow 2400 AC+ (efficiency depending on power, standby, response time, taper near full). Runs on the real P1 meter, so you can see what a battery would do with your solar panels and consumption before buying one. The web page compares the grid with and without battery per day, including savings with and without net metering.",
+    "nl": "Nieuw: gesimuleerde batterij met het gemeten gedrag van een Zendure SolarFlow 2400 AC+ (rendement afhankelijk van het vermogen, stand-by, reactietijd, afvlakken bij bijna vol). Draait op de echte P1-meter, zodat je vóór de aankoop ziet wat een batterij met jouw zonnepanelen en verbruik doet. De webpagina vergelijkt per dag het net met en zonder batterij, inclusief de opbrengst met en zonder saldering."
   }
 }

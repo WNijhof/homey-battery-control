@@ -302,7 +302,7 @@ def on_page(canvas, doc):
     canvas.setFont('Arial', 7.5)
     canvas.setFillColor(GREY)
     canvas.drawString(MARGIN, PAGE_H - 10 * mm, 'Handleiding Batterij Regeling voor Homey  ·  Zendure SolarFlow 2400 AC+')
-    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.5.0')
+    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.6.0')
     canvas.line(MARGIN, 12 * mm, PAGE_W - MARGIN, 12 * mm)
     canvas.drawString(MARGIN, 8 * mm, 'DrPeppers  ·  github.com/WNijhof/homey-battery-control')
     canvas.drawRightString(PAGE_W - MARGIN, 8 * mm, f'pagina {doc.page}')
@@ -1149,6 +1149,94 @@ def build():
                   ('Test: een instelling wijzigen via de webpagina komt door in Homey', ''),
                   ('Bladwijzer / snelkoppeling gemaakt op telefoon of tablet', ''),
               ]),
+              PageBreak(),
+
+              H1('6c. Simulatie: proefdraaien zonder batterij'),
+              P('Heb je (nog) geen thuisbatterij, voeg dan een <b>Gesimuleerde batterij (SolarFlow 2400 AC+)</b> toe. '
+                'Die batterij bestaat alleen in de app, maar gedraagt zich zoals reviews de Zendure SolarFlow 2400 AC+ '
+                'hebben gemeten. De hele regeling draait zoals met een echte batterij: strategieën, prijsplan, '
+                'zonverwachting, Flow-kaarten, logboek en webpagina. Zo zie je vooraf wat de batterij in <b>jouw</b> '
+                'huis zou doen, met jouw zonnepanelen, boiler en verbruik.'),
+              H2('6c.1 Hoe het werkt'),
+              P('De HomeWizard P1-meter meet het huis zonder batterij: zonnepanelen, warmtepompboiler en de rest van '
+                'het verbruik zitten daar al in. De app rekent uit hoe het net er mét batterij uit had gezien:'),
+              P('<b>net met batterij = P1-meting − batterijvermogen</b> (batterijvermogen + ontladen / − laden)'),
+              P('De regeling (nul op de meter, piekgrens, overschot) werkt met dat berekende net, net zoals hij met een '
+                'echte batterij met de echte meting zou werken. Er wordt niets aangestuurd: de simulatie heeft geen '
+                'demo-modus nodig.'),
+              table([
+                  ['Eigenschap', 'Standaard', 'Bron / toelichting'],
+                  ['Capaciteit', '2,4 kWh', 'Ingebouwde accu SolarFlow 2400 AC+ (instelling Batterij)'],
+                  ['Laden / ontladen', '800 W / 800 W', 'Stopcontact (2400 W alleen op een eigen groep)'],
+                  ['Rendement heen en terug', '88 % bij 800 W', 'Gemeten in reviews: 87–88 % (Zendure noemt tot 93 %)'],
+                  ['Vast omzettingsverlies', '8 W per richting', 'Maakt kleine vermogens minder zuinig: circa 81 % bij '
+                   '150 W (reviews: 78–82 % bij 100–200 W)'],
+                  ['Stand-by', '0,7 W net + 2,7 W accu', 'Gemeten; circa 65 Wh per dag uit de accu'],
+                  ['Reactietijd', '3 s, daarna 200 W/s', 'Reviews: binnen een paar seconden'],
+                  ['Bijna vol', 'Minder laadvermogen boven 95 %', 'Laatste fase van het laden (constante spanning)'],
+                  ['Laadgrenzen', 'Min./max. laadniveau', 'Zoals in de Zendure-app ingesteld'],
+              ], [42 * mm, 44 * mm, CONTENT_W - 86 * mm]),
+              Spacer(1, 4),
+              P('Alle waarden staan in de instellingen onder <b>Simulatie</b> en <b>Batterij</b>. Zo kun je ook een '
+                'grotere batterij (bijv. met een AB3000L: 5,28 kWh) of een eigen groep (2400 W) doorrekenen.', 'small'),
+              H2('6c.2 Toevoegen en laten lopen'),
+              *bullets([
+                  'Homey-app → Apparaat toevoegen → Batterij Regeling → <b>Gesimuleerde batterij (SolarFlow 2400 AC+)</b>.',
+                  'Alleen het IP-adres van de HomeWizard P1-meter is nodig (zoeken in het netwerk kan).',
+                  'Kies een strategie, bijvoorbeeld <i>Zelfconsumptie</i> of <i>Dynamische prijzen</i>.',
+                  'Laat de simulatie minstens twee weken lopen, liefst met zonnige en bewolkte dagen.',
+                  'Wil je een andere strategie of instelling vergelijken: noteer eerst de resultaten hieronder en vink '
+                  'dan <i>Simulatie-statistieken wissen</i> aan.',
+              ]),
+              H2('6c.3 Resultaten op de webpagina'),
+              table([
+                  ['Kolom', 'Betekenis'],
+                  ['Net zonder batterij', 'Afname en teruglevering zoals de P1-meter ze echt mat (kWh)'],
+                  ['Net met batterij', 'Afname en teruglevering als de batterij er had gestaan (kWh)'],
+                  ['Geladen (zon)', 'Geladen energie, waarvan uit zonne-overschot'],
+                  ['Ontladen / cycli', 'Ontladen energie; cycli = ontladen ÷ capaciteit'],
+                  ['Rendement', 'Ontladen ÷ geladen (grof, zonder verschil in laadniveau)'],
+                  ['Zon benut', 'Deel van de teruglevering dat de batterij in huis hield'],
+                  ['Opbrengst met saldering', 'Stroomkosten zonder minus met batterij, teruglevering tegen de all-in '
+                   'prijs (zo werkt het tot en met 2026)'],
+                  ['Opbrengst zonder saldering', 'Idem, maar teruglevering levert alleen de marktprijs op, min de '
+                   'terugleverkosten (vanaf 2027)'],
+              ], [42 * mm, CONTENT_W - 42 * mm]),
+              Spacer(1, 4),
+              callout('Met saldering levert opslaan van zonnestroom vrijwel niets op: je verliest 12 % of meer aan '
+                      'omzetting en verdient alleen aan prijsverschillen. Zonder saldering (vanaf 2027) levert elke kWh '
+                      'die je zelf gebruikt in plaats van terug te leveren het verschil op tussen de all-in prijs en de '
+                      'terugleververgoeding. Kijk dus vooral naar de laatste kolom.', 'info'),
+              H2('6c.4 Waar je op moet letten'),
+              *bullets([
+                  '<b>Boiler-Flows:</b> de simulatie heeft geen demo-modus, dus de voorwaarde <i>Demo-modus staat uit</i> '
+                  'is altijd waar. Kies je in de boiler-Flows de gesimuleerde batterij, dan reageert de boiler echt; '
+                  'de batterij niet. Het zonne-overschot is gelijk aan de echte teruglevering.',
+                  '<b>Homey Energy</b> telt de gesimuleerde batterij niet mee (het vermogen staat in '
+                  '<i>Batterijvermogen (gesimuleerd)</i>). In Insights staan het echte net (bij het HomeWizard-apparaat) '
+                  'en <i>Net met batterij</i> naast elkaar.',
+                  'Een echte batterij kan afwijken: firmware, temperatuur, een minimaal vermogen, of een laadniveau dat '
+                  'opnieuw gekalibreerd wordt. Controleer dat later met de tests in hoofdstuk 8.',
+                  'Voeg je later de echte Zendure toe, verwijder dan de simulatie: de webpagina toont alleen de eerste '
+                  'batterij.',
+              ]),
+              H2('6c.5 Resultaten per week'),
+              table([['Week', 'Afname zonder / met (kWh)', 'Terug zonder / met (kWh)', 'Cycli',
+                      'Opbrengst met saldering (€)', 'Zonder saldering (€)']] +
+                    [[TextField(20 * mm, 16, name=f'sim_{i}_w'), TextField(30 * mm, 16, name=f'sim_{i}_a'),
+                      TextField(30 * mm, 16, name=f'sim_{i}_t'), TextField(14 * mm, 16, name=f'sim_{i}_c'),
+                      TextField(28 * mm, 16, name=f'sim_{i}_s'),
+                      TextField(CONTENT_W - 146 * mm, 16, name=f'sim_{i}_n')] for i in range(8)],
+                    [24 * mm, 34 * mm, 34 * mm, 18 * mm, 32 * mm, CONTENT_W - 142 * mm], zebra=False),
+              Spacer(1, 8),
+              checklist('c6c', [
+                  ('Gesimuleerde batterij toegevoegd, P1-meter bereikbaar', 'Noteer datum'),
+                  ('Tegels „Net met batterij” en „Net zonder batterij (P1)” lopen logisch mee', ''),
+                  ('Na een zonnige dag: batterij vol geladen uit zon', 'Noteer max. laadniveau'),
+                  ('Strategie gekozen en genoteerd', 'Noteer strategie'),
+                  ('Twee weken resultaten genoteerd (tabel hierboven)', ''),
+              ]),
+              remarks('c6c', 44),
               PageBreak()]
 
     # ---------- 7 instellingen

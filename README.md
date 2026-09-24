@@ -17,6 +17,12 @@ De volledige installatie-, test- en controlehandleiding staat in `docs/Handleidi
 | Marstek | Venus E v1/v2, Venus A, Venus D | Modbus TCP via RS485-adapter (bijv. Elfin EW11) | Experimenteel |
 | Anker | SOLIX Solarbank Max AC, Solarbank Max, XE (AC), Solarbank 4 E5000 Pro | Officiële lokale Modbus TCP | Experimenteel |
 
+Geen batterij (nog)? Kies **Gesimuleerde batterij (SolarFlow 2400 AC+)**: een batterij die alleen in de app bestaat,
+met het gedrag dat reviews van de SolarFlow 2400 AC+ maten (88 % rendement bij 800 W, minder bij kleine vermogens,
+stand-by 0,7 W + 2,7 W, reactietijd 3 s). De regeling draait op je echte P1-meting (met zonnepanelen, boiler en
+verbruik) en rekent uit hoe het net er mét batterij uit had gezien. De webpagina toont per dag afname en teruglevering
+zonder en met batterij, cycli en de opbrengst met en zonder saldering (handleiding hoofdstuk 6c).
+
 Niet lokaal aan te sturen: Zendure Hub/Hyper/AIO (MQTT), Anker Solarbank 2/3 (cloud), Marstek B2500.
 De koppeling per merk staat in `lib/batteries/`; alle regeling is gedeeld (`lib/battery-device.js`).
 Driverdefinities worden gegenereerd met `node tools/gen-drivers.js` uit `tools/driver-base.json`.
@@ -86,7 +92,7 @@ homey app install                    # installeert de app permanent
 Wil je live logs zien tijdens het testen: `homey app run --remote` (de app stopt dan als je de terminal sluit).
 
 **Apparaat toevoegen**
-1. Homey-app → *Apparaten* → **+** → *Batterij Regeling* → kies het merk (*Zendure SolarFlow*, *Marstek Venus* of *Anker SOLIX*).
+1. Homey-app → *Apparaten* → **+** → *Batterij Regeling* → kies het merk (*Zendure SolarFlow*, *Marstek Venus*, *Anker SOLIX* of *Gesimuleerde batterij*).
 2. *Zoek in mijn netwerk* (10–20 s) of vul de IP-adressen zelf in → *Verbinden*.
 3. Laat de app een paar dagen in demo-modus meekijken en vergelijk de waarden (handleiding hoofdstuk 6a).
 4. Webpagina: open `http://<IP van je Homey>:8480`. Stel een pincode in (apparaat → instellingen → Webpagina)

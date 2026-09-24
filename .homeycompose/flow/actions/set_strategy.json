@@ -11,7 +11,7 @@
     {
       "type": "device",
       "name": "device",
-      "filter": "driver_id=zendure|marstek|anker"
+      "filter": "driver_id=zendure|marstek|anker|simulator"
     },
     {
       "type": "dropdown",

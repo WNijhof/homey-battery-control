@@ -1,0 +1,36 @@
+<header class="homey-header">
+  <h1 class="homey-title">HomeWizard API v2 koppelen</h1>
+  <p class="homey-subtitle">
+    Hiermee gebruikt de app de beveiligde lokale API v2 van je P1-meter in plaats van v1.
+  </p>
+</header>
+
+<ol class="homey-form-hint">
+  <li>Druk hieronder op <b>Start</b>.</li>
+  <li>Loop binnen 60 seconden naar de P1-meter en druk <b>kort op de knop</b> van de meter.</li>
+  <li>De app haalt het token op, test de verbinding en slaat het op.</li>
+</ol>
+
+<button class="homey-button-primary-full" id="start" type="button">Start</button>
+<p class="homey-form-hint" id="status"></p>
+
+<script type="application/javascript">
+  const start = document.getElementById('start');
+  const status = document.getElementById('status');
+
+  start.addEventListener('click', async () => {
+    start.classList.add('is-loading');
+    start.disabled = true;
+    status.textContent = 'Wachten op een druk op de knop van de P1-meter…';
+    try {
+      await Homey.emit('hw_token');
+      status.textContent = 'Gelukt: de app gebruikt nu API v2.';
+      Homey.done();
+    } catch (err) {
+      status.textContent = err.message || String(err);
+    } finally {
+      start.classList.remove('is-loading');
+      start.disabled = false;
+    }
+  });
+</script>

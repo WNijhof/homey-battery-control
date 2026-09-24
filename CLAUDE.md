@@ -1,12 +1,14 @@
 # Batterij Regeling (Homey app) — werkbestand
 
-Homey Pro-app (SDK 3, id `com.drpeppers.batterycontrol`, v0.5.0, Homey ≥ 12.3) die thuisbatterijen lokaal
+Homey Pro-app (SDK 3, id `com.drpeppers.batterycontrol`, v0.6.0, Homey ≥ 12.3) die thuisbatterijen lokaal
 aanstuurt: nul op de meter via een HomeWizard P1, dynamische kwartierprijzen en een zonverwachting.
 Geïnspireerd op Home Battery Control (docs.homebatterycontrol.com). Repo: github.com/WNijhof/homey-battery-control.
 Persoonlijke context (installatie, accounts, voorkeuren) staat in `CLAUDE.local.md` (niet in git).
 
 ## Status
 - Alles is getest met simulaties en unit-tests, **niets met echte hardware**. Nieuwe apparaten starten in demo-modus.
+- Simulatie (driver `simulator`, v0.6.0): batterij bestaat alleen in de app (`lib/batteries/simulator.js`), draait op de
+  echte P1; `net met batterij = P1 − batterijvermogen`. Vergelijking met/zonder batterij in `lib/simstats.js`.
 - Zendure: gebouwd voor de SolarFlow 2400 AC+ (zenSDK). Marstek en Anker: experimenteel (registers uit community-/officiële
   integraties, niet geverifieerd).
 - Publicatie: via `homey app publish` → Athom-portaal → Test-release (niet in de App Store).
@@ -18,6 +20,7 @@ Persoonlijke context (installatie, accounts, voorkeuren) staat in `CLAUDE.local.
 | `lib/battery-device.js` | Gedeelde device-klasse: regellus (`tick`), prijsplan, demo-modus, opbrengst/rendement, overschot-triggers, `applySettings` (webpagina), `getWebData`, logging |
 | `lib/battery-driver.js` | Gedeelde driver: pairing (`info`/`scan`/`configure`), repair (HomeWizard v2-token) |
 | `lib/batteries/{zendure,marstek,anker}.js` | Merkkoppeling met interface `read()`, `setPower(w)`, `release()`, `close()` (+ static `identify`) |
+| `lib/batteries/simulator.js`, `lib/simstats.js`, `drivers/simulator/` | Gesimuleerde SolarFlow 2400 AC+ (verlies = vast + ∝ vermogen, stand-by, reactietijd, taper) en de vergelijking met/zonder batterij (per dag, met/zonder saldering). Geen demo-modus en geen `battery_ip`; vermogen op `measure_power.battery` (telt niet in Homey Energy) |
 | `drivers/<merk>/{device,driver}.js` | Dunne subklassen: `createBatteryClient()`, `brand()`, `identify()` |
 | `drivers/<merk>/driver.compose.json`, `pair/`, `assets/` | **Gegenereerd** door `node tools/gen-drivers.js` uit `tools/driver-base.json` (+ `tools/pair/*`, `tools/images/*`). Niet met de hand bewerken |
 | `lib/controller.js` | Strategieën → set-point (`computeTarget`), `shouldSend`, `goalFollowUp`, piek-/exportgrens, hysterese |

@@ -11,7 +11,7 @@
     <label class="homey-form-label" for="profile">Model</label>
     <select class="homey-form-select" id="profile"></select>
   </div>
-  <div class="homey-form-group">
+  <div class="homey-form-group" id="batteryGroup">
     <label class="homey-form-label" for="batteryIp" id="batteryLabel">IP-adres batterij</label>
     <input class="homey-form-input" id="batteryIp" type="text" placeholder="192.168.1.50" inputmode="decimal" list="batteryList" />
     <datalist id="batteryList"></datalist>
@@ -33,7 +33,7 @@
       <span class="homey-form-checkbox-text">Ik gebruik HomeWizard API v2 (token later via Repareren)</span>
     </label>
   </div>
-  <p class="homey-form-hint">
+  <p class="homey-form-hint" id="tip">
     Tip: geef de batterij en de P1-meter een vast IP-adres in je router. Zet in de HomeWizard Energy-app
     bij de P1-meter "Lokale API" aan. De batterij start in demo-modus: de app kijkt eerst alleen mee.
   </p>
@@ -49,6 +49,11 @@
     $('title').textContent = `${info.label} koppelen`;
     if (info.hint) $('hint').textContent = info.hint;
     $('modbusGroup').hidden = !info.modbus;
+    if (info.simulated) {
+      $('batteryGroup').hidden = true;
+      $('tip').textContent = 'Zet in de HomeWizard Energy-app bij de P1-meter "Lokale API" aan. De gesimuleerde '
+        + 'batterij stuurt niets aan: de regeling rekent met je echte P1-meting en de batterij bestaat alleen in de app.';
+    }
     if (info.profiles) {
       $('profileGroup').hidden = false;
       $('profile').innerHTML = info.profiles.map((p) => `<option value="${p.id}">${p.label}</option>`).join('');
@@ -77,7 +82,7 @@
       const p1s = result.homewizard.filter((h) => /P1/i.test(h.type) || /P1/i.test(h.product));
       fill('batteryList', 'batteryIp', result.batteries, (b) => b.label);
       fill('p1List', 'p1Ip', p1s, (h) => h.product);
-      $('scanStatus').textContent = `Gevonden: ${result.batteries.length} batterij(en)${brand.modbus ? ' / Modbus-apparaten' : ''}, `
+      $('scanStatus').textContent = brand.simulated ? `Gevonden: ${p1s.length} P1-meter(s).` : `Gevonden: ${result.batteries.length} batterij(en)${brand.modbus ? ' / Modbus-apparaten' : ''}, `
         + `${p1s.length} P1-meter(s).` + (result.batteries.length > 1 || p1s.length > 1 ? ' Kies het juiste adres in de lijst.' : '');
     } catch (err) {
       $('scanStatus').textContent = `Zoeken mislukt: ${err.message || err}. Vul de adressen zelf in.`;
