@@ -302,7 +302,7 @@ def on_page(canvas, doc):
     canvas.setFont('Arial', 7.5)
     canvas.setFillColor(GREY)
     canvas.drawString(MARGIN, PAGE_H - 10 * mm, 'Handleiding Batterij Regeling voor Homey  ·  Zendure SolarFlow 2400 AC+')
-    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.7.1')
+    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.7.2')
     canvas.line(MARGIN, 12 * mm, PAGE_W - MARGIN, 12 * mm)
     canvas.drawString(MARGIN, 8 * mm, 'DrPeppers  ·  github.com/WNijhof/homey-battery-control')
     canvas.drawRightString(PAGE_W - MARGIN, 8 * mm, f'pagina {doc.page}')
@@ -1214,7 +1214,8 @@ def build():
                   'de batterij niet. Het zonne-overschot is gelijk aan de echte teruglevering.',
                   '<b>Homey Energy</b> telt de gesimuleerde batterij niet mee (het vermogen staat in '
                   '<i>Batterijvermogen (gesimuleerd)</i>). In Insights staan het echte net (bij het HomeWizard-apparaat) '
-                  'en <i>Net met batterij</i> naast elkaar.',
+                  'en <i>Net met batterij</i> naast elkaar. Het gesimuleerde laadniveau staat in de tegel <i>Laadniveau</i> '
+                  '(ook in Insights).',
                   'Een echte batterij kan afwijken: firmware, temperatuur, een minimaal vermogen, of een laadniveau dat '
                   'opnieuw gekalibreerd wordt. Controleer dat later met de tests in hoofdstuk 8.',
                   'Voeg je later de echte Zendure toe, verwijder dan de simulatie: de webpagina toont alleen de eerste '
@@ -1597,8 +1598,9 @@ def build():
                    'stand-by'],
                   ['„Zoek in mijn netwerk” vindt niets', 'Ander subnet/VLAN of client-isolatie',
                    'IP-adressen handmatig invullen; Homey en apparaten in hetzelfde netwerk plaatsen'],
-                  ['Zonverwachting blijft 0', 'Piekvermogen 0 of locatie Homey onbekend',
-                   'Panelgegevens en Homey-locatie controleren; forecast.solar max. 12 verzoeken per uur'],
+                  ['Zonverwachting blijft leeg of 0', 'Vinkje uit, piekvermogen 0, locatie Homey onbekend of '
+                   'forecast.solar weigert (max. 12 verzoeken per uur per IP-adres)',
+                   'Logboek: zoek op „Solar forecast”. Bij een fout probeert de app het na 10 min opnieuw'],
                   ['Lydos: waarschuwing „te veel verzoeken”', 'Ariston-cloud begrenst (HTTP 429)',
                    'Lydos-app pauzeert zelf; Flows minder vaak laten schakelen'],
               ], [46 * mm, 52 * mm, CONTENT_W - 98 * mm]),

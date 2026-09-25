@@ -156,6 +156,7 @@ async function deviceDay() {
     async setStoreValue(k, v) { this.store[k] = v; }
     hasCapability(c) { return c !== 'measure_power'; }
     async addCapability() {}
+    async removeCapability() {}
     getCapabilityValue(c) { return this.caps[c] ?? null; }
     async setCapabilityValue(c, v) {
       if (c === 'measure_power') throw new Error('simulator has no measure_power');
@@ -204,7 +205,7 @@ async function deviceDay() {
   for (let i = 1; i < (48 * 3600) / 5; i++) {
     clock += 5000;
     await d.tick();
-    maxSoc = Math.max(maxSoc, d.caps.measure_battery);
+    maxSoc = Math.max(maxSoc, d.caps.battery_soc);
   }
   const sim = d.simulationData();
   Date.now = realNow;

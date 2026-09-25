@@ -34,5 +34,9 @@
   "0.7.1": {
     "en": "Simulated P1 meter: what the P1 meter would read with the simulated battery, measured every 1-2 s. Live chart of the last 5 minutes on the web page.",
     "nl": "Gesimuleerde P1-meter: wat de P1-meter met de gesimuleerde batterij zou meten, elke 1-2 s. Live grafiek van de laatste 5 minuten op de webpagina."
+  },
+  "0.7.2": {
+    "en": "Simulated battery shows its state of charge as a tile (and in Insights). Solar forecast: a failed fetch is retried after 10 minutes, and the log says when no roof plane has a power filled in.",
+    "nl": "Gesimuleerde batterij toont het laadniveau als tegel (en in Insights). Zonverwachting: na een mislukte poging na 10 minuten opnieuw, en het logboek meldt als bij geen enkel dakvlak een vermogen is ingevuld."
   }
 }

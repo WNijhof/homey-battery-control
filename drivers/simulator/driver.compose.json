@@ -13,7 +13,7 @@
   "capabilities": [
     "battery_strategy",
     "battery_status",
-    "measure_battery",
+    "battery_soc",
     "measure_power.battery",
     "measure_power.setpoint",
     "measure_power.grid",
@@ -64,11 +64,6 @@
         "nl": "Batterijvermogen (gesimuleerd)"
       }
     }
-  },
-  "energy": {
-    "batteries": [
-      "INTERNAL"
-    ]
   },
   "images": {
     "small": "{{driverAssetsPath}}/images/small.png",

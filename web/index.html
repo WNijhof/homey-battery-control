@@ -252,7 +252,7 @@
         tile('Opbrengst vandaag', `€ ${nf(d.savingsToday, 2)}`, `totaal € ${nf(v.savingsTotal, 2)}`),
         tile('Geladen / ontladen', `${nf(v.charged, 1)} / ${nf(v.discharged, 1)}`, 'kWh totaal'),
         tile('Rendement (geleerd)', v.efficiency ? `${nf(v.efficiency, 1)} %` : '–', v.efficiency ? '' : 'nog te weinig gegevens'),
-        tile('Zon verwacht vandaag', v.forecastToday ? `${nf(v.forecastToday, 1)} kWh` : '–'),
+        tile('Zon verwacht vandaag', v.forecastToday != null ? `${nf(v.forecastToday, 1)} kWh` : '–'),
       ].join('');
       $('chart').innerHTML = chart(d.slots || [], d.threshold);
       $('events').innerHTML = events(d.slots || []);

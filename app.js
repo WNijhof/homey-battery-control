@@ -127,7 +127,7 @@ class BatteryControlApp extends Homey.App {
     });
     flow.getConditionCard('surplus_above').registerRunListener(({ device, power }) => device.surplus.current() > power);
     flow.getConditionCard('soc_above').registerRunListener(({ device, percent }) => {
-      const soc = device.getCapabilityValue('measure_battery');
+      const soc = device.getCapabilityValue(device.socCapability);
       return soc !== null && soc > percent;
     });
     flow.getConditionCard('demo_is_on').registerRunListener(({ device }) => device.getSetting('demo_mode') === true);

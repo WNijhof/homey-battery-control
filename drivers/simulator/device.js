@@ -21,7 +21,14 @@ class SimulatorDevice extends BatteryDevice {
       formatDate: (d) => this.homey.app.prices.formatDate(d),
     });
     this.statsTimer = this.homey.setInterval(() => this.saveStats(), STATS_SAVE_MS);
+    // v0.7.2: measure_battery (shown as the device's own battery) replaced by battery_soc (a tile)
+    if (this.hasCapability('measure_battery')) await this.removeCapability('measure_battery').catch(this.error);
+    if (!this.hasCapability('battery_soc')) await this.addCapability('battery_soc').catch(this.error);
     await super.onInit();
+  }
+
+  get socCapability() {
+    return 'battery_soc';
   }
 
   createBatteryClient() {

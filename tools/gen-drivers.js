@@ -146,12 +146,14 @@ for (const [id, brand] of Object.entries(BRANDS)) {
   Object.assign(battery.children.find((c) => c.id === 'capacity_kwh'), clone(brand.capacity));
   if (brand.simulated) {
     // no battery hardware: no IP address and no demo mode; not a battery for Homey Energy
+    // measure_battery would be shown as the device's own battery (low-battery icon), not as a tile
     def.class = 'other';
-    def.energy = { batteries: ['INTERNAL'] }; // required with measure_battery
+    delete def.energy;
     def.settings = def.settings.filter((g) => g.label.en !== 'Mode');
     connection.children = connection.children.filter((c) => c.id !== 'battery_ip');
     def.settings.splice(1, 0, clone(simulation));
-    def.capabilities = def.capabilities.map((c) => (c === 'measure_power' ? 'measure_power.battery' : c));
+    const simCaps = { measure_power: 'measure_power.battery', measure_battery: 'battery_soc' };
+    def.capabilities = def.capabilities.map((c) => simCaps[c] || c);
     def.capabilitiesOptions['measure_power.battery'] = {
       title: { en: 'Battery power (simulated)', nl: 'Batterijvermogen (gesimuleerd)' },
     };
