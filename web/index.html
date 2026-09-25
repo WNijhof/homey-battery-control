@@ -92,7 +92,16 @@
     <p>Deze batterij bestaat alleen in de app. De regeling rekent met je echte P1-meting (zonnepanelen, boiler en de
       rest van het huis) en houdt bij hoe het net er mét batterij uit had gezien. Opbrengst = stroomkosten zonder
       batterij min stroomkosten met batterij, tegen de kwartierprijs van dat moment.</p>
-    <div class="tablewrap" id="simTable"></div>
+    <h3 style="font-size:14px;margin:0 0 6px">Live: laatste 5 minuten</h3>
+    <div id="traceChart"></div>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--grey)"></span>net zonder batterij (P1)</span>
+      <span><span class="dot" style="background:var(--green)"></span>net met batterij</span>
+      <span><span class="dot" style="background:var(--amber)"></span>batterij (+ ontladen / − laden)</span>
+      <span>– – gewenst batterijvermogen</span>
+    </div>
+    <p id="traceNote" style="margin-top:6px"></p>
+    <div class="tablewrap" id="simTable" style="margin-top:14px"></div>
     <p id="simModel" style="margin-top:10px"></p>
   </div>
 
@@ -254,9 +263,44 @@
     }
   }
 
+  // Live chart of the simulation: rows [t, p1, battery, setpoint]; grid with battery = p1 − battery
+  function traceChart(rows) {
+    if (!rows || rows.length < 2) return '<p class="readonly">Nog geen metingen.</p>';
+    const w = 960; const h = 200; const span = 5 * 60 * 1000; const end = rows[rows.length - 1][0];
+    const vals = rows.flatMap((r) => [r[1], r[2], r[1] - r[2], r[3]]);
+    const max = Math.max(...vals, 100); const min = Math.min(...vals, -100);
+    const x = (t) => (w * (t - (end - span))) / span;
+    const y = (v) => 8 + ((max - v) / (max - min)) * (h - 26);
+    // step lines: a value holds until the next reading
+    const line = (f, color, dash = '') => {
+      let d = '';
+      rows.forEach((r, i) => {
+        const px = x(r[0]).toFixed(1); const py = y(f(r)).toFixed(1);
+        d += i ? `H${px}V${py}` : `M${px},${py}`;
+      });
+      return `<path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" ${dash ? `stroke-dasharray="${dash}"` : ''}/>`;
+    };
+    let svg = `<line x1="0" x2="${w}" y1="${y(0).toFixed(1)}" y2="${y(0).toFixed(1)}" stroke="currentColor" opacity=".25"/>`;
+    for (let m = 1; m < 5; m += 1) {
+      const px = x(end - m * 60000).toFixed(1);
+      svg += `<line x1="${px}" x2="${px}" y1="0" y2="${h - 18}" stroke="currentColor" opacity=".1"/>`
+        + `<text x="${Number(px) + 3}" y="${h - 4}" font-size="11" fill="currentColor" opacity=".6">−${m} min</text>`;
+    }
+    svg += `<text x="3" y="${(y(max) + 12).toFixed(1)}" font-size="11" fill="currentColor" opacity=".6">${nf(max)} W</text>`
+      + `<text x="3" y="${(y(min) - 3).toFixed(1)}" font-size="11" fill="currentColor" opacity=".6">${nf(min)} W</text>`;
+    svg += line((r) => r[1], 'var(--grey)') + line((r) => r[3], 'var(--amber)', '5 4')
+      + line((r) => r[2], 'var(--amber)') + line((r) => r[1] - r[2], 'var(--green)');
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${svg}</svg>`;
+  }
+
   function renderSimulation(sim) {
     $('simCard').hidden = !sim;
     if (!sim) return;
+    $('traceChart').innerHTML = traceChart(sim.trace);
+    const gaps = (sim.trace || []).slice(1).map((r, i) => r[0] - sim.trace[i][0]);
+    const step = gaps.length ? gaps.sort((a, b) => a - b)[Math.floor(gaps.length / 2)] / 1000 : null;
+    $('traceNote').textContent = step === null ? '' : `Ongeveer één meting per ${nf(step, 1)} s.${step > 2.5
+      ? ' Voeg in Homey het apparaat "Gesimuleerde P1-meter" toe voor een meting elke 1–2 s.' : ''}`;
     const row = (label, p, cls = '') => `<tr class="${cls}"><td>${esc(label)}</td>`
       + `<td>${nf(p.realImport, 2)} / ${nf(p.realExport, 2)}</td>`
       + `<td>${nf(p.simImport, 2)} / ${nf(p.simExport, 2)}</td>`

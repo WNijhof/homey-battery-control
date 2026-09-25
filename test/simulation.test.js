@@ -6,6 +6,7 @@ const assert = require('assert');
 const Module = require('module');
 const { SimulatedBattery } = require('../lib/batteries/simulator');
 const { SimulationStats } = require('../lib/simstats');
+const { SimTrace } = require('../lib/simtrace');
 
 const H = 3600 * 1000;
 
@@ -205,9 +206,9 @@ async function deviceDay() {
     await d.tick();
     maxSoc = Math.max(maxSoc, d.caps.measure_battery);
   }
+  const sim = d.simulationData();
   Date.now = realNow;
 
-  const sim = d.simulationData();
   const tot = sim.days[0]; // second day
   assert.strictEqual(sim.days.length, 2, 'two days recorded');
   console.log('sunny day:', JSON.stringify({
@@ -223,4 +224,53 @@ async function deviceDay() {
   assert(d.caps['measure_power.battery'] !== undefined, 'battery power on the sub-capability');
   // zero-grid works on the simulated grid: while charging below full power the simulated grid stays near 0
   assert(Math.abs(d.caps['measure_power.grid']) < 400, `grid with battery near zero at midnight (${d.caps['measure_power.grid']})`);
+
+  // live chart: the last 5 minutes of control rounds (every 5 s)
+  assert(sim.trace.length >= 55 && sim.trace.length <= 61, `5 minutes in the chart (${sim.trace.length})`);
+  const [, p1, bat] = sim.trace[sim.trace.length - 1];
+  assert.strictEqual(p1, house(), 'chart has the real P1 power');
+  assert(Math.abs(bat + d.caps['measure_power.battery']) <= 1, 'chart has the battery power (+ discharge)');
+
+  // simulated P1 meter: reads in between the control rounds, grid = P1 − simulated battery
+  Date.now = () => clock;
+  const SimP1 = loadWithHomey('../drivers/sim_p1/device', FakeDevice);
+  const meter = new SimP1({ interval: 2 });
+  meter.getData = () => ({ id: 'simp1-sim', simulator: 'sim' });
+  meter.homey.drivers = { getDriver: () => ({ getDevices: () => [d] }) };
+  clock += 2000;
+  await meter.measure();
+  Date.now = realNow;
+  const c = meter.caps;
+  assert.strictEqual(c['measure_power.p1'], house(), 'simulated P1: real P1 power');
+  assert.strictEqual(c['measure_power.grid'], c['measure_power.p1'] - c['measure_power.battery'], 'simulated P1: grid = P1 − battery');
+  assert.strictEqual(d.trace.samples[d.trace.samples.length - 1].t, clock, 'reading added to the chart');
+  meter.homey.drivers = { getDriver: () => ({ getDevices: () => [] }) };
+  await meter.measure();
+  assert.strictEqual(meter.failures, 1, 'missing simulated battery counts as a failure');
+}
+
+function loadWithHomey(path, FakeDevice) {
+  const origLoad = Module._load;
+  Module._load = function load(request, ...rest) {
+    if (request === 'homey') return { Device: FakeDevice };
+    return origLoad.call(this, request, ...rest);
+  };
+  try {
+    return require(path);
+  } finally {
+    Module._load = origLoad;
+  }
+}
+
+// SimTrace: readings from two loops arrive out of order; old readings are dropped
+{
+  const tr = new SimTrace(60 * 1000);
+  tr.add({ t: 10000, p1: 500, battery: 100 });
+  tr.add({ t: 5000, p1: 400, battery: 0 });
+  tr.add({ t: 20000, p1: 300, battery: 300 });
+  assert.deepStrictEqual(tr.samples.map((s) => s.t), [5000, 10000, 20000], 'sorted by time');
+  assert.strictEqual(tr.samples[1].grid, 400, 'grid = P1 − battery');
+  tr.add({ t: 70000, p1: 0, battery: 0 });
+  assert.deepStrictEqual(tr.samples.map((s) => s.t), [10000, 20000, 70000], 'older than a minute dropped');
+  assert.strictEqual(tr.recent(30000, 70000).length, 1, 'recent');
 }

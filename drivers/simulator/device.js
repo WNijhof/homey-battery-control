@@ -3,8 +3,10 @@
 const BatteryDevice = require('../../lib/battery-device');
 const { SimulatedBattery } = require('../../lib/batteries/simulator');
 const { SimulationStats } = require('../../lib/simstats');
+const { SimTrace } = require('../../lib/simtrace');
 
 const STATS_SAVE_MS = 5 * 60 * 1000;
+const CHART_MS = 5 * 60 * 1000;
 
 /**
  * Simulated Zendure SolarFlow 2400 AC+ on the real P1 meter: the whole control runs as with a real
@@ -13,6 +15,7 @@ const STATS_SAVE_MS = 5 * 60 * 1000;
 class SimulatorDevice extends BatteryDevice {
 
   async onInit() {
+    this.trace = new SimTrace();
     this.simStats = new SimulationStats({
       saved: this.getStoreValue('sim_stats'),
       formatDate: (d) => this.homey.app.prices.formatDate(d),
@@ -62,6 +65,27 @@ class SimulatorDevice extends BatteryDevice {
     });
   }
 
+  afterControl(bat, meter) {
+    this.trace.add({
+      p1: meter.realGridPower, battery: bat.batteryPower, setpoint: this.lastCommand ? this.lastCommand.target : 0,
+    });
+  }
+
+  /**
+   * One reading for the simulated P1 meter, in between the control rounds: the real P1 power and
+   * the simulated battery at this moment. Returns { p1, battery, grid } (+ import, + discharge).
+   */
+  async readSimulatedGrid() {
+    if (!this.battery || !this.p1) throw new Error('Gesimuleerde batterij is nog niet gestart');
+    const { gridPower } = await this.p1.read();
+    this.battery.advance();
+    return this.trace.add({
+      p1: gridPower,
+      battery: Math.round(this.battery.meteredPower()),
+      setpoint: this.lastCommand ? this.lastCommand.target : 0,
+    });
+  }
+
   simulationData() {
     const capacity = this.getSetting('capacity_kwh');
     const days = this.simStats.days.slice(-14).reverse().map((d) => SimulationStats.summary(d, capacity));
@@ -71,6 +95,7 @@ class SimulatorDevice extends BatteryDevice {
       socExact: this.battery ? Math.round(this.battery.soc() * 10) / 10 : null,
       total: SimulationStats.summary(this.simStats.total, capacity),
       days,
+      trace: this.trace.recent(CHART_MS).map((x) => [x.t, x.p1, x.battery, x.setpoint]),
     };
   }
 

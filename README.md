@@ -22,6 +22,8 @@ met het gedrag dat reviews van de SolarFlow 2400 AC+ maten (88 % rendement bij 8
 stand-by 0,7 W + 2,7 W, reactietijd 3 s). De regeling draait op je echte P1-meting (met zonnepanelen, boiler en
 verbruik) en rekent uit hoe het net er mét batterij uit had gezien. De webpagina toont per dag afname en teruglevering
 zonder en met batterij, cycli en de opbrengst met en zonder saldering (handleiding hoofdstuk 6c).
+Voeg daarnaast een **Gesimuleerde P1-meter** toe om te zien wat de P1-meter mét batterij zou tonen, elke 1–2 s gemeten;
+de webpagina toont dan een live grafiek van de laatste 5 minuten (P1, batterij, net met batterij, gewenst vermogen).
 
 Niet lokaal aan te sturen: Zendure Hub/Hyper/AIO (MQTT), Anker Solarbank 2/3 (cloud), Marstek B2500.
 De koppeling per merk staat in `lib/batteries/`; alle regeling is gedeeld (`lib/battery-device.js`).

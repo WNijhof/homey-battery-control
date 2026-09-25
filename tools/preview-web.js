@@ -9,8 +9,42 @@ const PriceService = require('../lib/prices');
 const { makePlan } = require('../lib/planner');
 const manifest = require('../app.json');
 const { SimulationStats } = require('../lib/simstats');
+const { SimulatedBattery } = require('../lib/batteries/simulator');
+const { computeTarget, shouldSend } = require('../lib/controller');
+const { SimTrace } = require('../lib/simtrace');
 
 const SIM = process.argv.includes('--sim');
+
+// 5 minutes of the control loop (5 s) with the simulated battery; the P1 meter is read every 2 s
+function sampleTrace() {
+  const end = Date.now();
+  let now = end - 5 * 60 * 1000;
+  const bat = new SimulatedBattery({ now: () => now, soc: 60 });
+  const cfg = {
+    gain: 0.7, gridTarget: 20, deadband: 25, minPower: 30, maxChargeW: 800, maxDischargeW: 800, minSoc: 10, maxSoc: 100,
+  };
+  const house = (t) => {
+    const s = (t - (end - 5 * 60 * 1000)) / 1000;
+    return Math.round(350 + (s > 60 && s < 150 ? 1800 : 0) - (s > 200 ? 900 : 0) + 30 * Math.sin(s / 7));
+  };
+  const trace = new SimTrace();
+  let last = null;
+  for (let i = 0; now <= end; i += 1, now += 1000) {
+    bat.advance(now);
+    const battery = Math.round(bat.meteredPower());
+    if (i % 5 === 0) {
+      const { target } = computeTarget({
+        strategy: 'self_consumption', batteryPower: battery, gridPower: house(now) - battery, soc: 60, cfg,
+      });
+      if (shouldSend(target, last, now, cfg)) {
+        bat.setPower(target);
+        last = { target, time: now };
+      }
+    }
+    if (i % 2 === 0) trace.add({ t: now, p1: house(now), battery, setpoint: last ? last.target : 0 });
+  }
+  return trace.samples.map((x) => [x.t, x.p1, x.battery, x.setpoint]);
+}
 
 function sampleSimulation() {
   const day = (date, f) => SimulationStats.summary({
@@ -28,6 +62,7 @@ function sampleSimulation() {
     socExact: 62.4,
     total,
     days,
+    trace: sampleTrace(),
   };
 }
 

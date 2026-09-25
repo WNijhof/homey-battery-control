@@ -1,6 +1,6 @@
 # Batterij Regeling (Homey app) — werkbestand
 
-Homey Pro-app (SDK 3, id `com.drpeppers.batterycontrol`, v0.6.0, Homey ≥ 12.3) die thuisbatterijen lokaal
+Homey Pro-app (SDK 3, id `com.drpeppers.batterycontrol`, v0.7.1, Homey ≥ 12.3) die thuisbatterijen lokaal
 aanstuurt: nul op de meter via een HomeWizard P1, dynamische kwartierprijzen en een zonverwachting.
 Geïnspireerd op Home Battery Control (docs.homebatterycontrol.com). Repo: github.com/WNijhof/homey-battery-control.
 Persoonlijke context (installatie, accounts, voorkeuren) staat in `CLAUDE.local.md` (niet in git).
@@ -21,6 +21,7 @@ Persoonlijke context (installatie, accounts, voorkeuren) staat in `CLAUDE.local.
 | `lib/battery-driver.js` | Gedeelde driver: pairing (`info`/`scan`/`configure`), repair (HomeWizard v2-token) |
 | `lib/batteries/{zendure,marstek,anker}.js` | Merkkoppeling met interface `read()`, `setPower(w)`, `release()`, `close()` (+ static `identify`) |
 | `lib/batteries/simulator.js`, `lib/simstats.js`, `drivers/simulator/` | Gesimuleerde SolarFlow 2400 AC+ (verlies = vast + ∝ vermogen, stand-by, reactietijd, taper) en de vergelijking met/zonder batterij (per dag, met/zonder saldering). Geen demo-modus en geen `battery_ip`; vermogen op `measure_power.battery` (telt niet in Homey Energy) |
+| `drivers/sim_p1/`, `lib/simtrace.js` | Gesimuleerde P1-meter (hand-geschreven driver, niet gegenereerd): leest elke 1–2 s P1 + gesimuleerde batterij via `readSimulatedGrid()` van het simulator-device; alleen `measure_power.*`-subcapabilities. `SimTrace` = 10 min fijnmazige historie voor de live grafiek op de webpagina |
 | `drivers/<merk>/{device,driver}.js` | Dunne subklassen: `createBatteryClient()`, `brand()`, `identify()` |
 | `drivers/<merk>/driver.compose.json`, `pair/`, `assets/` | **Gegenereerd** door `node tools/gen-drivers.js` uit `tools/driver-base.json` (+ `tools/pair/*`, `tools/images/*`). Niet met de hand bewerken |
 | `lib/controller.js` | Strategieën → set-point (`computeTarget`), `shouldSend`, `goalFollowUp`, piek-/exportgrens, hysterese |

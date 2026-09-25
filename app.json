@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.drpeppers.batterycontrol",
-  "version": "0.6.1",
+  "version": "0.7.1",
   "compatibility": ">=12.3.0",
   "sdk": 3,
   "platforms": [
@@ -2847,6 +2847,83 @@
         }
       ],
       "id": "marstek"
+    },
+    {
+      "name": {
+        "en": "Simulated P1 meter (grid with simulated battery)",
+        "nl": "Gesimuleerde P1-meter (net met gesimuleerde batterij)"
+      },
+      "class": "sensor",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "capabilities": [
+        "measure_power.grid",
+        "measure_power.p1",
+        "measure_power.battery"
+      ],
+      "capabilitiesOptions": {
+        "measure_power.grid": {
+          "title": {
+            "en": "Grid with battery (simulated)",
+            "nl": "Net met batterij (gesimuleerd)"
+          }
+        },
+        "measure_power.p1": {
+          "title": {
+            "en": "Grid without battery (P1)",
+            "nl": "Net zonder batterij (P1)"
+          }
+        },
+        "measure_power.battery": {
+          "title": {
+            "en": "Battery (simulated, + discharging)",
+            "nl": "Batterij (gesimuleerd, + ontladen)"
+          }
+        }
+      },
+      "images": {
+        "small": "/drivers/sim_p1/assets/images/small.png",
+        "large": "/drivers/sim_p1/assets/images/large.png",
+        "xlarge": "/drivers/sim_p1/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "interval",
+          "type": "number",
+          "label": {
+            "en": "Measuring interval",
+            "nl": "Meetinterval"
+          },
+          "value": 2,
+          "min": 1,
+          "max": 30,
+          "units": {
+            "en": "s"
+          },
+          "hint": {
+            "en": "How often the P1 meter is read. Independent of the control interval of the battery, so you can see how fast the control reacts.",
+            "nl": "Hoe vaak de P1-meter wordt uitgelezen. Los van het regelinterval van de batterij, zodat je ziet hoe snel de regeling reageert."
+          }
+        }
+      ],
+      "id": "sim_p1"
     },
     {
       "name": {

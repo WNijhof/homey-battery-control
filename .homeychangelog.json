@@ -26,5 +26,13 @@
   "0.6.1": {
     "en": "Solar forecast for two roof planes (e.g. east + west): the forecasts are added up.",
     "nl": "Zonverwachting voor twee dakvlakken (bijv. oost + west): de verwachtingen worden opgeteld."
+  },
+  "0.7.0": {
+    "en": "Same as 0.6.1.",
+    "nl": "Gelijk aan 0.6.1."
+  },
+  "0.7.1": {
+    "en": "Simulated P1 meter: what the P1 meter would read with the simulated battery, measured every 1-2 s. Live chart of the last 5 minutes on the web page.",
+    "nl": "Gesimuleerde P1-meter: wat de P1-meter met de gesimuleerde batterij zou meten, elke 1-2 s. Live grafiek van de laatste 5 minuten op de webpagina."
   }
 }

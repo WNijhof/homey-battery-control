@@ -5,7 +5,7 @@ Supported batteries (local control, no cloud):
 - Marstek Venus E (v1/v2/v3), Venus A and Venus D (Modbus TCP; v3 via its Ethernet port, others via an RS485 bridge)
 - Anker SOLIX Solarbank Max AC, Solarbank Max, XE and Solarbank 4 E5000 Pro (official local Modbus TCP)
 Marstek and Anker support is experimental: check the data in demo mode first.
-No battery yet? Add a simulated battery with the measured behaviour of a Zendure SolarFlow 2400 AC+. It runs on your real P1 meter and shows what the battery would have done in your home: grid import and export with and without battery, cycles and savings with and without net metering.
+No battery yet? Add a simulated battery with the measured behaviour of a Zendure SolarFlow 2400 AC+. It runs on your real P1 meter and shows what the battery would have done in your home: grid import and export with and without battery, cycles and savings with and without net metering. A simulated P1 meter shows, every 1–2 seconds, what your P1 meter would read with the battery, and the web page has a live chart of the last 5 minutes.
 
 Strategies: self-consumption (zero on the meter), charge from solar only, zero import, dynamic prices (charge in cheap periods, discharge in expensive ones, with a configurable action per period), force charge or discharge until a target level, and standby / peak shaving. Optional grid import and export limits work on top of every strategy.
 

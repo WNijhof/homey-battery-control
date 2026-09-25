@@ -302,7 +302,7 @@ def on_page(canvas, doc):
     canvas.setFont('Arial', 7.5)
     canvas.setFillColor(GREY)
     canvas.drawString(MARGIN, PAGE_H - 10 * mm, 'Handleiding Batterij Regeling voor Homey  ·  Zendure SolarFlow 2400 AC+')
-    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.6.1')
+    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.7.1')
     canvas.line(MARGIN, 12 * mm, PAGE_W - MARGIN, 12 * mm)
     canvas.drawString(MARGIN, 8 * mm, 'DrPeppers  ·  github.com/WNijhof/homey-battery-control')
     canvas.drawRightString(PAGE_W - MARGIN, 8 * mm, f'pagina {doc.page}')
@@ -1220,7 +1220,32 @@ def build():
                   'Voeg je later de echte Zendure toe, verwijder dan de simulatie: de webpagina toont alleen de eerste '
                   'batterij.',
               ]),
-              H2('6c.5 Resultaten per week'),
+              H2('6c.5 Gesimuleerde P1-meter en reactiesnelheid'),
+              P('Wil je zien hoe snel de regeling reageert, voeg dan ook een <b>Gesimuleerde P1-meter</b> toe '
+                '(Apparaat toevoegen → Batterij Regeling → <i>Gesimuleerde P1-meter</i>; kies de gesimuleerde '
+                'batterij). Die toont wat de HomeWizard P1-meter zou meten als de batterij echt laadde en ontlaadde, '
+                'en meet los van de regeling elke 2 seconden (instelling <i>Meetinterval</i>, 1–30 s):'),
+              table([
+                  ['Waarde', 'Betekenis'],
+                  ['Net met batterij (gesimuleerd)', 'P1-meting − batterijvermogen: wat de P1-meter dan zou tonen'],
+                  ['Net zonder batterij (P1)', 'De echte P1-meting'],
+                  ['Batterij (gesimuleerd, + ontladen)', 'Vermogen van de gesimuleerde batterij op dat moment'],
+              ], [52 * mm, CONTENT_W - 52 * mm]),
+              Spacer(1, 4),
+              P('De webpagina toont bij de simulatie een <b>live grafiek van de laatste 5 minuten</b> met deze drie '
+                'lijnen en het gewenste batterijvermogen. Zonder gesimuleerde P1-meter staat er één punt per '
+                'regelronde in (standaard elke 5 s), met de P1-meter één punt per 1–2 s. Homey Energy telt het '
+                'apparaat niet mee.'),
+              P('<b>Wat is normaal?</b> Met de standaardinstellingen (regelinterval 5 s, regelversterking 0,7, '
+                'reactietijd 3 s, 200 W/s) gaat het na het aanzetten van een verbruiker van 600 W zo: de eerste '
+                'reactie na 3–8 s, twee derde gecompenseerd na circa 5–8 s, binnen 50 W na circa 10–15 s. De '
+                'regeling corrigeert per ronde 70 % van het verschil, zodat het laatste stuk in stapjes gaat. Met '
+                'regelversterking 1,0 is het verschil in de simulatie na circa 6 s weg; met een echte batterij kan '
+                'dat gaan overschieten (heen en weer regelen), dus verhoog dat stap voor stap.'),
+              callout('Bekijk de reactiesnelheid op de webpagina of in Insights bij de gesimuleerde P1-meter, niet '
+                      'bij het HomeWizard-apparaat in Homey: dat werkt minder vaak bij, en Insights toont bij langere '
+                      'periodes gemiddelden.', 'info'),
+              H2('6c.6 Resultaten per week'),
               table([['Week', 'Afname zonder / met (kWh)', 'Terug zonder / met (kWh)', 'Cycli',
                       'Opbrengst met saldering (€)', 'Zonder saldering (€)']] +
                     [[TextField(20 * mm, 16, name=f'sim_{i}_w'), TextField(30 * mm, 16, name=f'sim_{i}_a'),
@@ -1232,6 +1257,7 @@ def build():
               checklist('c6c', [
                   ('Gesimuleerde batterij toegevoegd, P1-meter bereikbaar', 'Noteer datum'),
                   ('Tegels „Net met batterij” en „Net zonder batterij (P1)” lopen logisch mee', ''),
+                  ('Gesimuleerde P1-meter toegevoegd; live grafiek loopt mee', 'Noteer reactietijd (s)'),
                   ('Na een zonnige dag: batterij vol geladen uit zon', 'Noteer max. laadniveau'),
                   ('Strategie gekozen en genoteerd', 'Noteer strategie'),
                   ('Twee weken resultaten genoteerd (tabel hierboven)', ''),
