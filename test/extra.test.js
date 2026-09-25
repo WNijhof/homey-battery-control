@@ -34,6 +34,16 @@ f.setWatts({
 });
 assert(Math.abs(f.wattsAt(Date.parse('2026-09-23T10:00:00Z')) - 2000) < 1, 'noon value');
 assert.strictEqual(f.wattsAt(Date.parse('2026-09-23T23:00:00Z')), 0, 'night gap = 0');
+
+// two roof planes (east + west) with different timestamps are summed
+f.setPlanes([
+  { '2026-09-23 07:00:00': 0, '2026-09-23 10:00:00': 1500, '2026-09-23 16:00:00': 200, '2026-09-23 19:00:00': 0 },
+  { '2026-09-23 07:30:00': 0, '2026-09-23 10:00:00': 300, '2026-09-23 15:30:00': 1500, '2026-09-23 19:30:00': 0 },
+]);
+assert(Math.abs(f.wattsAt(Date.parse('2026-09-23T08:00:00Z')) - 1800) < 1, 'east + west at 10:00');
+assert(Math.abs(f.wattsAt(Date.parse('2026-09-23T13:30:00Z')) - (1500 + 200 + (1300 * 0.5) / 6)) < 1, 'west peak + east tail');
+assert(f.wattsAt(Date.parse('2026-09-23T17:15:00Z')) > 0, 'west still producing after east sunset');
+assert.strictEqual(f.wattsAt(Date.parse('2026-09-23T20:00:00Z')), 0, 'night = 0');
 console.log('forecast ok');
 
 // ---- planner: sunny day replaces night-time grid charging

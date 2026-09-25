@@ -185,7 +185,7 @@ async function deviceDay() {
     min_spread: 0.05, dyn_low: 'charge', dyn_neutral: 'solar_only', dyn_high: 'self_consumption',
     grid_import_limit: 0, grid_export_limit: 0, switch_hysteresis: 0, charge_goal_soc: 100, discharge_goal_soc: 20,
     follow_up_strategy: 'self_consumption', avg_load_w: 500, day_load_w: 400, forecast_enabled: false, pv_kwp: 0,
-    pv_tilt: 35, pv_azimuth: 0, entsoe_token: '', web_enabled: false, web_port: 8480, web_pin: '',
+    pv_tilt: 35, pv_azimuth: 0, pv2_kwp: 0, pv2_tilt: 35, pv2_azimuth: 90, entsoe_token: '', web_enabled: false, web_port: 8480, web_pin: '',
     sim_start_soc: 10, sim_rte: 88, sim_overhead_w: 8, sim_standby_w: 0.7, sim_idle_drain_w: 2.7, sim_delay_s: 3,
     sim_ramp_wps: 200, sim_export_fee: 0, sim_reset_stats: false,
   });

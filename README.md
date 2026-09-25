@@ -3,7 +3,7 @@
 Homey Pro app in de geest van [Home Battery Control](https://homebatterycontrol.com/): lokale, slimme
 aansturing van je **thuisbatterij** op basis van een **HomeWizard P1-meter**,
 **dynamische kwartierprijzen** (EPEX via EnergyZero, ENTSO-E als reserve) en een **zonverwachting**
-(forecast.solar).
+(forecast.solar, maximaal twee dakvlakken, bijv. oost + west).
 
 De volledige installatie-, test- en controlehandleiding staat in `docs/Handleiding-Batterij-Regeling.pdf`
 (opnieuw aanmaken: `python tools/make_manual.py`).

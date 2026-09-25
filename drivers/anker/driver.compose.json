@@ -864,8 +864,8 @@
             "nl": "Zonverwachting gebruiken"
           },
           "hint": {
-            "en": "Skip grid charging when enough sun is expected (forecast.solar, uses the location of your Homey).",
-            "nl": "Niet uit het net laden als er genoeg zon verwacht wordt (forecast.solar, gebruikt de locatie van je Homey)."
+            "en": "Skip grid charging when enough sun is expected (forecast.solar, uses the location of your Homey). Two roof planes, e.g. east + west.",
+            "nl": "Niet uit het net laden als er genoeg zon verwacht wordt (forecast.solar, gebruikt de locatie van je Homey). Twee dakvlakken mogelijk, bijv. oost + west."
           },
           "value": false
         },
@@ -873,12 +873,12 @@
           "id": "pv_kwp",
           "type": "number",
           "label": {
-            "en": "Solar panel peak power",
-            "nl": "Piekvermogen zonnepanelen"
+            "en": "Plane 1: peak power",
+            "nl": "Dakvlak 1: piekvermogen"
           },
           "hint": {
-            "en": "Total of all panels, e.g. 12 × 400 Wp = 4.8 kWp",
-            "nl": "Totaal van alle panelen, bijv. 12 × 400 Wp = 4,8 kWp"
+            "en": "Panels on this plane only, e.g. 6 × 400 Wp = 2.4 kWp. East-west: fill in east here and west under plane 2.",
+            "nl": "Alleen de panelen op dit vlak, bijv. 6 × 400 Wp = 2,4 kWp. Oost-west: hier oost invullen en west bij dakvlak 2."
           },
           "value": 0,
           "min": 0,
@@ -892,8 +892,8 @@
           "id": "pv_tilt",
           "type": "number",
           "label": {
-            "en": "Panel tilt",
-            "nl": "Hellingshoek panelen"
+            "en": "Plane 1: tilt",
+            "nl": "Dakvlak 1: hellingshoek"
           },
           "hint": {
             "en": "0 = flat, 90 = vertical",
@@ -910,14 +910,69 @@
           "id": "pv_azimuth",
           "type": "number",
           "label": {
-            "en": "Panel direction",
-            "nl": "Richting panelen"
+            "en": "Plane 1: direction",
+            "nl": "Dakvlak 1: richting"
           },
           "hint": {
             "en": "0 = south, -90 = east, 90 = west",
             "nl": "0 = zuid, -90 = oost, 90 = west, 180 = noord"
           },
           "value": 0,
+          "min": -180,
+          "max": 180,
+          "units": {
+            "en": "°"
+          }
+        },
+        {
+          "id": "pv2_kwp",
+          "type": "number",
+          "label": {
+            "en": "Plane 2: peak power",
+            "nl": "Dakvlak 2: piekvermogen"
+          },
+          "hint": {
+            "en": "0 = no second plane. E.g. the west side of an east-west roof.",
+            "nl": "0 = geen tweede dakvlak. Bijv. de westkant van een oost-west-opstelling."
+          },
+          "value": 0,
+          "min": 0,
+          "max": 50,
+          "step": 0.1,
+          "units": {
+            "en": "kWp"
+          }
+        },
+        {
+          "id": "pv2_tilt",
+          "type": "number",
+          "label": {
+            "en": "Plane 2: tilt",
+            "nl": "Dakvlak 2: hellingshoek"
+          },
+          "hint": {
+            "en": "0 = flat, 90 = vertical",
+            "nl": "0 = plat, 90 = verticaal"
+          },
+          "value": 35,
+          "min": 0,
+          "max": 90,
+          "units": {
+            "en": "°"
+          }
+        },
+        {
+          "id": "pv2_azimuth",
+          "type": "number",
+          "label": {
+            "en": "Plane 2: direction",
+            "nl": "Dakvlak 2: richting"
+          },
+          "hint": {
+            "en": "0 = south, -90 = east, 90 = west",
+            "nl": "0 = zuid, -90 = oost, 90 = west, 180 = noord"
+          },
+          "value": 90,
           "min": -180,
           "max": 180,
           "units": {

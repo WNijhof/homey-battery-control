@@ -22,5 +22,9 @@
   "0.6.0": {
     "en": "New: simulated battery with the measured behaviour of a Zendure SolarFlow 2400 AC+ (efficiency depending on power, standby, response time, taper near full). Runs on the real P1 meter, so you can see what a battery would do with your solar panels and consumption before buying one. The web page compares the grid with and without battery per day, including savings with and without net metering.",
     "nl": "Nieuw: gesimuleerde batterij met het gemeten gedrag van een Zendure SolarFlow 2400 AC+ (rendement afhankelijk van het vermogen, stand-by, reactietijd, afvlakken bij bijna vol). Draait op de echte P1-meter, zodat je vóór de aankoop ziet wat een batterij met jouw zonnepanelen en verbruik doet. De webpagina vergelijkt per dag het net met en zonder batterij, inclusief de opbrengst met en zonder saldering."
+  },
+  "0.6.1": {
+    "en": "Solar forecast for two roof planes (e.g. east + west): the forecasts are added up.",
+    "nl": "Zonverwachting voor twee dakvlakken (bijv. oost + west): de verwachtingen worden opgeteld."
   }
 }

@@ -302,7 +302,7 @@ def on_page(canvas, doc):
     canvas.setFont('Arial', 7.5)
     canvas.setFillColor(GREY)
     canvas.drawString(MARGIN, PAGE_H - 10 * mm, 'Handleiding Batterij Regeling voor Homey  ·  Zendure SolarFlow 2400 AC+')
-    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.6.0')
+    canvas.drawRightString(PAGE_W - MARGIN, PAGE_H - 10 * mm, 'versie app 0.6.1')
     canvas.line(MARGIN, 12 * mm, PAGE_W - MARGIN, 12 * mm)
     canvas.drawString(MARGIN, 8 * mm, 'DrPeppers  ·  github.com/WNijhof/homey-battery-control')
     canvas.drawRightString(PAGE_W - MARGIN, 8 * mm, f'pagina {doc.page}')
@@ -945,7 +945,7 @@ def build():
                 'later nodig.'),
               checklist('c3', [
                   ('Homey Pro (2023 of nieuwer), firmware 12.3 of hoger', 'Nodig voor de dashboardwidget'),
-                  ('Gegevens zonnepanelen: totaal piekvermogen (kWp), hellingshoek en richting', 'Voor de zonverwachting; zie SolarEdge-portaal'),
+                  ('Gegevens zonnepanelen per dakvlak (max. 2, bijv. oost en west): piekvermogen (kWp), hellingshoek en richting', 'Voor de zonverwachting; zie SolarEdge-portaal'),
                   ('Locatie van Homey correct ingesteld', 'Homey → Instellingen → Locatie (voor de zonverwachting)'),
                   ('Zendure SolarFlow 2400 AC+ geïnstalleerd en werkend in de Zendure-app', ''),
                   ('Zendure-firmware bijgewerkt naar de nieuwste versie', 'Lokale API (zenSDK) vereist recente firmware'),
@@ -1293,9 +1293,12 @@ def build():
         ]),
         ('Zonverwachting', [
             ('Zonverwachting gebruiken', 'uit', 'Aan zodra de panelgegevens hieronder kloppen'),
-            ('Piekvermogen zonnepanelen', '0 kWp', 'Aantal panelen × Wp; bijv. 12 × 400 Wp = 4,8 kWp'),
-            ('Hellingshoek panelen', '35°', '0 = plat, 90 = verticaal'),
-            ('Richting panelen', '0°', '0 = zuid, −90 = oost, 90 = west; bij oost-west: gemiddelde of 0'),
+            ('Dakvlak 1: piekvermogen', '0 kWp', 'Alleen de panelen op dit vlak; bijv. 6 × 400 Wp = 2,4 kWp'),
+            ('Dakvlak 1: hellingshoek', '35°', '0 = plat, 90 = verticaal'),
+            ('Dakvlak 1: richting', '0°', '0 = zuid, −90 = oost, 90 = west, 180 = noord'),
+            ('Dakvlak 2: piekvermogen', '0 kWp', '0 = geen tweede vlak; oost-west: oost bij 1, west bij 2'),
+            ('Dakvlak 2: hellingshoek', '35°', '0 = plat, 90 = verticaal'),
+            ('Dakvlak 2: richting', '90°', 'Zoals bij dakvlak 1; de verwachtingen worden opgeteld'),
             ('Gemiddeld verbruik overdag', '400 W', 'Gaat van de zonverwachting af; de rest vult de batterij'),
         ]),
         ('Webpagina', [
